@@ -1,0 +1,9 @@
+@import "tailwindcss"; /* v4 için yeni kullanım bu şekildedir */
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.dark {
+    color-scheme: dark;
+}
