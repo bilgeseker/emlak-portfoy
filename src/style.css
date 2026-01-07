@@ -1,9 +1,14 @@
-@import "tailwindcss"; /* v4 için yeni kullanım bu şekildedir */
+@import "tailwindcss";
+
+/* 1. Tailwind v4'e dark mode için '.dark' class'ını kullanacağını söyle */
+@variant dark (&:where(.dark, .dark *));
+
 body {
     margin: 0;
     padding: 0;
 }
 
+/* 2. PrimeVue ve genel sistem için color-scheme ayarı */
 .dark {
     color-scheme: dark;
 }

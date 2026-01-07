@@ -1,13 +1,10 @@
 <template>
+    <Toast position="bottom-center"/>
     <div class="h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 ">
         <div class="w-full h-full overflow-hidden grid grid-cols-1 lg:grid-cols-2">
 
             <!-- Left: Illustration / Gradient -->
             <div class="hidden lg:flex items-center justify-center p-10 " :style="bgStyle">
-                <!-- <div class="text-center text-white px-6">
-                    <h2 class="text-3xl font-bold mb-2">Emlak Portföy</h2>
-                    <p class="opacity-90">Hızlı, güvenli ve modern portföy yönetimi ile işinizi büyütün.</p>
-                </div> -->
             </div>
 
             <!-- Right: Form -->
@@ -16,7 +13,6 @@
                     <div class="flex items-center justify-center mb-8">
                         <img src="@/assets/logo.jpeg" alt="logo" class="w-80 h-auto" />
                     </div>
-                    <!--  <h3 class="text-2xl font-semibold text-center mb-5">Giriş Yap</h3> -->
 
                     <form @submit.prevent="handleSubmit" class="space-y-4">
                         <div class="mb-3">
@@ -25,7 +21,7 @@
                                     <i class="pi pi-user" />
                                 </InputIcon>
                                 <InputText id="input" v-model="email" type="text"
-                                    placeholder="E-posta veya kullanıcı adı" autofocus fluid class="loginInput" />
+                                    placeholder="E-posta" autofocus fluid class="loginInput" />
                             </IconField>
                         </div>
 
@@ -43,21 +39,6 @@
                             <Button type="submit" label="Giriş Yap" :loading="loading" class="w-full p-button-red" />
                         </div>
                     </form>
-
-                    <!-- <div class="my-6 flex items-center gap-3">
-                        <div class="flex-1 h-px bg-slate-200"></div>
-                        <div class="text-sm text-slate-400">veya</div>
-                        <div class="flex-1 h-px bg-slate-200"></div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <button class="py-2 px-4 rounded-lg border flex items-center justify-center gap-2 hover:bg-slate-50">
-                            <i class="pi pi-google text-red-500" /> Google
-                        </button>
-                        <button class="py-2 px-4 rounded-lg border flex items-center justify-center gap-2 hover:bg-slate-50">
-                            <i class="pi pi-facebook text-blue-600" /> Facebook
-                        </button>
-                    </div> -->
                 </div>
             </div>
 
@@ -73,9 +54,12 @@ import Button from 'primevue/button';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import loginBackground from '@/assets/loginbackground.jpg';
+import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { supabase } from '@/supabase';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
@@ -101,7 +85,7 @@ const handleSubmit = async () => {
     loading.value = true;
     
     // Supabase Auth Giriş İşlemi
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
         password: password.value,
     });
@@ -111,8 +95,7 @@ const handleSubmit = async () => {
         console.error("Auth hatası:", error.message);
     } else {
         toast.add({ severity: 'success', summary: 'Hoş Geldiniz', detail: 'Başarıyla giriş yapıldı', life: 2000 });
-        console.log("Kullanıcı verisi:", data.user);
-        // Burada kullanıcıyı Dashboard sayfasına yönlendireceğiz
+        router.push('/estateList');
     }
     
     loading.value = false;

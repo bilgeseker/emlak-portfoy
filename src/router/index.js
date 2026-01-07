@@ -12,8 +12,8 @@ const router = createRouter({
         },{
             path: "/estateList",
             name: "evListesi",
-            component: EstateList
-            // meta: { requiresAuth: true, is_admin: true }
+            component: EstateList,
+            meta: { requiresAuth: true }
         }
     ]
 })
