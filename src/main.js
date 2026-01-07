@@ -6,8 +6,9 @@ import ToastService from 'primevue/toastservice';
 import Aura from '@primeuix/themes/aura';
 import router from './router/index.js'
 // import ToastService from 'primevue/toastservice';
-
 import 'primeicons/primeicons.css'
+import { VueQueryPlugin } from '@tanstack/vue-query'
+// import { queryClient } from './QueryClient'
 
 const app = createApp(App);
 app.use(PrimeVue, {
@@ -22,4 +23,5 @@ app.use(PrimeVue, {
 });
 app.use(router)
 app.use(ToastService);
+app.use(VueQueryPlugin)
 app.mount('#app')

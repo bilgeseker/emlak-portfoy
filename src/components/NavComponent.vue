@@ -47,7 +47,7 @@
 
 
         <div class="p-4 border-t dark:border-slate-500 space-y-2">
-            <button @click="toggleDarkMode"
+            <button @click="toggleTheme"
                 class="w-full flex items-center gap-4 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg"
                 :class="[localCollapsed ? 'justify-center' : '']">
                 <i :class="['pi text-slate-500 dark:text-slate-200', isDark ? 'pi-sun' : 'pi-moon']"></i>
@@ -68,7 +68,9 @@ import { useBreakpoints, breakpointsTailwind } from '@vueuse/core'
 import { ref, onMounted, defineProps, watch, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import { supabase } from '../supabase';
+import { useTheme } from '@/composables/useTheme'
 
+const { toggleTheme } = useTheme()
 const isDark = ref(false);
 const router = useRouter();
 const props = defineProps({ isCollapsed: Boolean });
@@ -96,13 +98,17 @@ const closeMenu = () => {
 const closeOnMobile = () => {
     if (window.innerWidth < 1024) closeMenu();
 };
-const toggleDarkMode = () => { 
-    isDark.value = !isDark.value;
-    document.documentElement.classList.toggle('dark'); 
-};
+// const toggleDarkMode = () => { 
+//     isDark.value = !isDark.value;
+//     if (isDark.value) {
+//     document.documentElement.classList.add('dark')
+//   } else {
+//     document.documentElement.classList.remove('dark')
+//   }
+// };
 const handleLogout = async () => {
     await supabase.auth.signOut(); router.push('/');
-    document.documentElement.classList.toggle('dark');
+    document.documentElement.classList.remove('dark');
 };
 
 onMounted(() => { isDark.value = document.documentElement.classList.contains('dark'); });

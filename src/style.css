@@ -12,3 +12,6 @@ body {
 .dark {
     color-scheme: dark;
 }
+.dark .p-datatable {
+    background-color: transparent !important;
+}
