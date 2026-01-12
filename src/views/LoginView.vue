@@ -1,17 +1,18 @@
 <template>
-    <Toast position="bottom-center"/>
-    <div class="h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 ">
+    <Toast position="bottom-center" />
+    <div
+        class="h-screen flex items-center justify-center bg-gradient-to-b from-slate-50 to-white dark:from-slate-950 dark:to-slate-900 ">
         <div class="w-full h-full overflow-hidden grid grid-cols-1 lg:grid-cols-2">
 
             <!-- Left: Illustration / Gradient -->
-            <div class="hidden lg:flex items-center justify-center p-10 " :style="bgStyle">
+            <div class="hidden lg:flex items-center justify-center p-10 " :style="bgStyle"> 
             </div>
 
             <!-- Right: Form -->
             <div class="bg-white dark:bg-slate-900 p-8 lg:p-12 flex flex-col justify-center">
                 <div class="max-w-md mx-auto w-full">
                     <div class="flex items-center justify-center mb-8">
-                        <img src="@/assets/logo.jpeg" alt="logo" class="w-80 h-auto" />
+                        <!-- <img :src="logo" alt="logo" class="w-80 h-auto" /> -->
                     </div>
 
                     <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -20,8 +21,8 @@
                                 <InputIcon>
                                     <i class="pi pi-user" />
                                 </InputIcon>
-                                <InputText id="input" v-model="email" type="text"
-                                    placeholder="E-posta" autofocus fluid class="loginInput" />
+                                <InputText id="input" v-model="email" type="text" placeholder="E-posta" autofocus fluid
+                                    class="loginInput" />
                             </IconField>
                         </div>
 
@@ -54,6 +55,7 @@ import Button from 'primevue/button';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import loginBackground from '@/assets/loginbackground.jpg';
+// import logo from '@/assets/logo.jpeg';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { supabase } from '@/supabase';
@@ -83,7 +85,7 @@ const handleSubmit = async () => {
     }
 
     loading.value = true;
-    
+
     // Supabase Auth Giriş İşlemi
     const { error } = await supabase.auth.signInWithPassword({
         email: email.value,
@@ -97,7 +99,7 @@ const handleSubmit = async () => {
         toast.add({ severity: 'success', summary: 'Hoş Geldiniz', detail: 'Başarıyla giriş yapıldı', life: 2000 });
         router.push('/estateList');
     }
-    
+
     loading.value = false;
 };
 // function handleSubmit() {

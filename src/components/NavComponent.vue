@@ -2,7 +2,7 @@
     <div v-if="!localCollapsed" class="lg:hidden fixed inset-0 bg-black/50 z-40" @click="closeMenu"></div>
 
     <aside :class="[
-        'h-screen bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-800 transition-all duration-300 flex flex-col z-50',
+        'h-screen bg-white dark:bg-zinc-900 border-r border-slate-200 dark:border-zinc-800 transition-all duration-300 flex flex-col z-50',
         // MASAÜSTÜ: isCollapsed ise 20 birim (sadece ikon), değilse 64 birim
         localCollapsed ? 'lg:w-18' : 'lg:w-64',
         // MOBİL: isCollapsed ise ekranın dışına at (-w-full), değilse üstüne getir (fixed)
@@ -24,23 +24,23 @@
                 <div :class="[
                     'flex items-center gap-4 px-4 py-3 mb-2 rounded-xl transition-all group cursor-pointer',
                     isActive
-                        ? 'bg-orange-50 dark:bg-purple-400/30 text-orange-700 dark:text-purple-200 shadow-sm'
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                        ? 'bg-purple-500 dark:bg-purple-800 text-purple-50 dark:text-purple-100 shadow-sm'
+                        : 'text-slate-600 dark:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-700'
                 ]">
                     <i :class="[
                         item.icon,
-                        'text-lg flex-shrink-0',
+                        'text-sm flex-shrink-0',
                         isActive
-                            ? 'text-orange-600 dark:text-purple-200'
-                            : 'text-slate-400 group-hover:text-slate-400'
+                            ? 'text-purple-50 dark:text-purple-200'
+                            : 'text-slate-600 dark:text-zinc-100'
                     ]"></i>
 
-                    <span v-if="!localCollapsed" class="font-medium text-sm whitespace-nowrap">
+                    <span v-if="!localCollapsed" class="font-bold text-sm dark:font-bold">
                         {{ item.label }}
                     </span>
 
                     <!-- 🔥 Aktif bar -->
-                    <span v-if="isActive" class="ml-auto w-2 h-2  rounded-full bg-orange-500 dark:bg-purple-500"></span>
+                    <span v-if="isActive" class="ml-auto w-2 h-2  rounded-full bg-purple-300"></span>
                 </div>
             </router-link>
         </nav>
@@ -70,8 +70,9 @@ import { useRouter } from 'vue-router';
 import { supabase } from '../supabase';
 import { useTheme } from '@/composables/useTheme'
 
-const { toggleTheme } = useTheme()
-const isDark = ref(false);
+// const { toggleTheme } = useTheme()
+
+const { isDark, toggleTheme } = useTheme()
 const router = useRouter();
 const props = defineProps({ isCollapsed: Boolean });
 const emit = defineEmits(['update:isCollapsed']);
@@ -85,9 +86,10 @@ watch(() => props.isCollapsed, (newVal) => {
 });
 
 const menuItems = [
-    { label: 'Dashboard', icon: 'pi pi-chart-bar', route: '/dashboard' },
+    // { label: 'Dashboard', icon: 'pi pi-chart-bar', route: '/dashboard' },
     { label: 'İlanlarım', icon: 'pi pi-home', route: '/estateList' },
-    { label: 'Müşteriler', icon: 'pi pi-users', route: '/musteriler' },
+    { label: 'Müşteriler', icon: 'pi pi-users', route: '/customerList' },
+    { label: 'İlan ekle', icon: 'pi pi-plus-circle', route: '/addEstate' },
 ];
 
 const closeMenu = () => {

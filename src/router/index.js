@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from "vue-router"
 import LoginView from "@/views/LoginView.vue";
 import EstateList from "@/views/EstateList.vue";
 import EstateDetails from "@/views/EstateDetails.vue";
+import CustomerList from "@/views/CustomerList.vue";
+import AddEstate from "@/views/AddEstate.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -20,6 +22,16 @@ const router = createRouter({
             path: "/estateDetails/:id",
             name: "evDetaylari",
             component: EstateDetails,
+            meta: { requiresAuth: true }
+        },{
+            path: "/customerList",
+            name: "musteriListesi",
+            component: CustomerList,
+            meta: { requiresAuth: true }
+        },{
+            path: "/addEstate",
+            name: "evEkle",
+            component: AddEstate,
             meta: { requiresAuth: true }
         }
     ]
