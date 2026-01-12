@@ -14,6 +14,7 @@
 
       <div :class="['flex-1 overflow-y-auto' , route.name === 'giris' ? '' : 'p-6']">
         <RouterView />
+        <VueQueryDevtools :initial-is-open="true" />
       </div>
     </main>
 
@@ -24,6 +25,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import NavComponent from './components/NavComponent.vue';
+import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue'
 // import { ToggleButton } from 'primevue';

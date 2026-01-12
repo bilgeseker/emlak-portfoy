@@ -98,7 +98,7 @@
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Isıtma</label>
                 <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-                <Select :options="heatingData" optionLabel="label"
+                <Select :options="heatingOptions" optionLabel="label"
                     placeholder="Isıtma Tipi Seçiniz" filter class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
             </div>
 
@@ -109,7 +109,7 @@
 
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mutfak</label>
-                <Select :options="heatingData" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
+                <Select  optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
             </div>
 
             <div class="flex flex-col gap-2">
@@ -140,7 +140,7 @@ import Select from 'primevue/select';
 // import { useQuery } from '@tanstack/vue-query'
 import { defineProps, defineEmits, ref, computed } from 'vue';
 import allData from '../constants/cities_data.js';
-import heatingData from '../constants/heating_types.js';
+import {heatingOptions} from '../constants/heating_types.js';
 const props = defineProps({ modelValue: Boolean });
 const emit = defineEmits(['update:modelValue']);
 
@@ -153,6 +153,7 @@ const saveEstate = () => {
 };
 
 const onCityChange = () => {
+    console.log(heatingOptions)
     selectedDistrict.value = null;
     selectedNeighborhood.value = null;
 };

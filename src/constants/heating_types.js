@@ -1,4 +1,4 @@
-export default [
+export const heatingOptions = [
     { label: 'Yok', value: 'yok' },
     { label: 'Soba', value: 'soba' },
     { label: 'Doğalgaz Sobası', value: 'dogalgaz_sobasi' },

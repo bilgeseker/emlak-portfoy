@@ -8,6 +8,7 @@ import router from './router/index.js'
 // import ToastService from 'primevue/toastservice';
 import 'primeicons/primeicons.css'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import ConfirmationService from 'primevue/confirmationservice';
 // import { queryClient } from './QueryClient'
 
 const app = createApp(App);
@@ -23,5 +24,6 @@ app.use(PrimeVue, {
 });
 app.use(router)
 app.use(ToastService);
-app.use(VueQueryPlugin)
+app.use(VueQueryPlugin);
+app.use(ConfirmationService);
 app.mount('#app')
