@@ -23,6 +23,8 @@
     "core-js": "^3.8.3",
     "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
+    "turkey-neighbourhoods": "^4.0.3",
+    "turkiye": "^1.0.0",
     "vue": "^3.2.13",
     "vue-router": "^4.6.4"
   },

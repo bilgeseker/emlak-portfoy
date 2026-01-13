@@ -8,48 +8,31 @@
             <InputText v-model="title" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" />
         </div>
 
+         <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Emlak Tipi</label>
+            <Select :options="[
+                { label: 'Konut', value: 'konut' },
+                { label: 'İş Yeri', value: 'is_yeri' },
+                { label: 'Arsa', value: 'arsa' },
+                { label: 'Konut Projeleri', value: 'konut_proje' },
+                { label: 'Bina', value: 'bina' },
+                { label: 'Devre Mülk', value: 'devre_mulk' },
+                { label: 'Turistik Tesis', value: 'turistik_tesis' },
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="property_type" />
+        </div>
+
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İl</label>
-            <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="selectedCity" :options="allData" filter optionLabel="il" placeholder="İl Seçiniz"
-                @change="onCityChange">
-                <template #value="slotProps">
-                    <div v-if="slotProps.value" class="flex items-center">
-                        <span class="text-slate-800 dark:text-slate-100">{{ slotProps.value.il }}</span>
-                    </div>
-                    <span v-else class="text-slate-400">
-                        {{ slotProps.placeholder }}
-                    </span>
-                </template>
-
-                <template #option="slotProps">
-                    <div class="flex items-center">
-                        <span class="text-md">{{ slotProps.option.il }}</span>
-                    </div>
-                </template>
-            </Select>
+            <Select v-model="selectedCity" :options="allCities" optionLabel="name" filter
+                    placeholder="İl Seçiniz" @change="onCityChange">
+                </Select>
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlçe</label>
-            <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="selectedDistrict" :options="districtList" filter optionLabel="ilce"
-                :disabled="!selectedCity" placeholder="İlçe Seçiniz">
-                <template #value="slotProps">
-                    <div v-if="slotProps.value" class="flex items-center">
-                        <span class="text-slate-800 dark:text-slate-100">{{ slotProps.value.ilce }}</span>
-                    </div>
-                    <span v-else class="text-slate-400">
-                        {{ slotProps.placeholder }}
-                    </span>
-                </template>
-
-                <template #option="slotProps">
-                    <div class="flex items-center">
-                        <span class="text-md">{{ slotProps.option.ilce }}</span>
-                    </div>
-                </template>
-            </Select>
+            <Select v-model="selectedDistrict" :options="districtList" filter :disabled="!selectedCity"
+                placeholder="Mahalle Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -58,11 +41,6 @@
             <Select v-model="selectedNeighborhood" :options="neighborhoodList" filter :disabled="!selectedDistrict"
                 placeholder="Mahalle Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
                 class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
-            <DatePicker v-model="created_at" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -76,7 +54,7 @@
             <InputNumber v-model="m2_net" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                 inputClass="p-3 md:p-2 w-full" />
         </div>
-
+        
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bulunduğu Kat</label>
             <InputNumber v-model="floor_located" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
@@ -98,7 +76,7 @@
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Isıtma</label>
             <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="heating" :options="heatingOptions" optionLabel="label" placeholder="Isıtma Tipi Seçiniz"
+            <Select v-model="heating" :options="heatingOptions" optionLabel="label" optionValue="value" placeholder="Isıtma Tipi Seçiniz"
                 filter class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
         </div>
 
@@ -113,7 +91,7 @@
             <Select :options="[
                 { label: 'Açık (Amerikan)', value: 'acik' },
                 { label: 'Kapalı', value: 'kapali' }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="kitchen" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="kitchen" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -121,7 +99,7 @@
             <Select :options="[
                 { label: 'Var', value: true },
                 { label: 'Yok', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="balcony" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="balcony" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -129,7 +107,7 @@
             <Select :options="[
                 { label: 'Var', value: true },
                 { label: 'Yok', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="lift" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="lift" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -139,7 +117,7 @@
                 { label: 'Kapalı Otopark', value: 'kapali_otopark' },
                 { label: 'Açık & Kapalı Otopark', value: 'acikkapali_otopark' },
                 { label: 'Yok', value: 'yok' }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="parking" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="parking" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -147,7 +125,7 @@
             <Select :options="[
                 { label: 'Evet', value: true },
                 { label: 'Hayır', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="furnished" />
+            ]" optionLabel="label" optionValue="value"  class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="furnished" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -155,12 +133,12 @@
             <Select v-model="isInSite" :options="[
                 { label: 'Evet', value: true },
                 { label: 'Hayır', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site Adı</label>
-            <InputText :disabled="isInSite.value === false"
+            <InputText :disabled="!isInSite"
                 class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" v-model="site_name" />
         </div>
 
@@ -170,7 +148,7 @@
                 { label: 'Boş', value: 'bos' },
                 { label: 'Kiracılı', value: 'kiracili' },
                 { label: 'Mülk Sahibi', value: 'mulk_sahibi' }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="usage_status" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="usage_status" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -184,7 +162,7 @@
             <Select :options="[
                 { label: 'Evet', value: true },
                 { label: 'Hayır', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="swap" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="swap" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -199,7 +177,7 @@
                 { label: 'İntifa Hakkı Tesisli', value: 'intifa_hakki' },
                 { label: 'Yurt Dışı Tapulu', value: 'yurtdisi_tapu' },
                 { label: 'Tapu Kaydı Yok', value: 'tapu_kaydi_yok' },
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="deed_status" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="deed_status" />
         </div>
 
         <div class="flex flex-col gap-2">
@@ -207,17 +185,19 @@
             <Select :options="[
                 { label: 'Evet', value: true },
                 { label: 'Hayır', value: false }
-            ]" optionLabel="label" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="credit" />
+            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="credit" />
+        </div>
+        
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
+            <DatePicker v-model="created_at" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy" />
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Fiyat (TL)</label>
             <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY"
                 locale="tr-TR" inputClass="p-3 md:p-2 w-full" v-model="price" />
-        </div>
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Emlak Tipi</label>
-            <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" v-model="property_type" />
         </div>
 
         <!-- <div class="flex flex-col gap-2">
@@ -278,12 +258,14 @@ import FileUpload from 'primevue/fileupload';
 // import { supabase } from '@/supabase.js';
 // import { useQuery } from '@tanstack/vue-query'
 import { ref, computed } from 'vue';
-import allData from '../constants/cities_data.js';
+// import allData from '../constants/cities_data.js';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { supabase } from '@/supabase';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import {heatingOptions} from '../constants/heating_types.js';
+import { getCities, getDistrictsByCityCode, getNeighbourhoodsByCityCodeAndDistrict } from 'turkey-neighbourhoods';
+const allCities = getCities();
 // const props = defineProps({ modelValue: Boolean, id: Number });
 // const emit = defineEmits(['update:modelValue']);
 
@@ -311,10 +293,9 @@ const price = ref(null);
 const notes = ref(null);
 const property_type = ref(null);
 const image = ref(null);
-const selectedFile = ref(null);
-const isInSite = ref(true);
+const isInSite = ref(null);
 const furnished = ref(null);
-const queryClient = useQueryClient()
+const queryClient = useQueryClient();
 const toast = useToast();
 
 
@@ -331,7 +312,6 @@ function onFileSelect(event) {
 
 const clearImage = () => {
     image.value = null;
-    selectedFile.value = null;
 };
 // const onUpload = (event) => {
 //     console.log('Uploaded files:', event.files);
@@ -343,17 +323,31 @@ const onCityChange = () => {
 };
 
 const districtList = computed(() => {
-    return selectedCity.value ? selectedCity.value.ilceler : [];
+    return getDistrictsByCityCode(selectedCity.value?.code);
 });
 
 const neighborhoodList = computed(() => {
-    return selectedDistrict.value ? selectedDistrict.value.mahalleler : [];
+    if (!selectedCity.value || !selectedDistrict.value) {
+        return [];
+    }
+    try {
+        return getNeighbourhoodsByCityCodeAndDistrict(
+            selectedCity.value.code, 
+            selectedDistrict.value
+        );
+    } catch (error) {
+        console.error("Mahalleler yüklenirken hata oluştu:", error);
+        return [];
+    }
 });
 
 const saveEstate = () => {
 
     try {
-
+        if(!selectedCity.value.name || !selectedDistrict.value || !selectedNeighborhood.value || !created_at.value){
+            toast.add({ severity: 'error', summary: 'Hata',detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
+            return;
+        }
         const date = new Date(created_at.value);
         const y = date.getFullYear()
         const m = String(date.getMonth() + 1).padStart(2, "0")
@@ -363,34 +357,35 @@ const saveEstate = () => {
 
         const payload = {
             created_at: finalDate,
-            city: selectedCity.value.il,
-            district: selectedDistrict.value.ilce,
+            city: selectedCity.value.name,
+            district: selectedDistrict.value,
             neighborhood: selectedNeighborhood.value,
             m2_gross: m2_gross.value,
             m2_net: m2_net.value,
-            floor_located: floor_located.value,
-            num_of_floors: num_of_floors.value,
-            building_age: building_age.value,
-            heating: heating.value.value,
-            num_of_bath: num_of_bath.value,
-            kitchen: kitchen.value.value,
-            balcony: balcony.value.value,
-            lift: lift.value.value,
-            parking: parking.value.value,
-            furnished: furnished.value.value,
-            in_site: isInSite.value.value,
-            site_name: site_name.value,
-            usage_status: usage_status.value.value,
-            member_fee: member_fee.value,
-            swap: swap.value.value,
-            credit: credit.value.value,
+            floor_located: floor_located.value || null,
+            num_of_floors: num_of_floors.value || null,
+            building_age: building_age.value || null,
+            heating: heating.value || null,
+            num_of_bath: num_of_bath.value || null,
+            kitchen: kitchen.value || null,
+            balcony: balcony.value || null,
+            lift: lift.value || null,
+            parking: parking.value || null,
+            furnished: furnished.value || null,
+            in_site: isInSite.value || null,
+            site_name: site_name.value || null,
+            usage_status: usage_status.value || null,
+            member_fee: member_fee.value || null,
+            swap: swap.value || null,
+            credit: credit.value || null,
             price: price.value,
-            notes: notes.value,
-            deed_status: deed_status.value.value,
-            img_id: null,
-            property_type: property_type.value,
+            notes: notes.value || null,
+            deed_status: deed_status.value,
+            img_id: image.value || null,
+            property_type: property_type.value ,
             title: title.value
         };
+        console.log(payload)
         mutation.mutate(payload);
     } catch (error) {
         console.log(error)
@@ -426,20 +421,21 @@ const mutation = useMutation({
                 price: payload.price,
                 notes: payload.notes,
                 deed_status: payload.deed_status,
-                img_id: null,
+                img_id: payload.img_id,
                 title: payload.title,
                 property_type: payload.property_type
             }
         ]);
 
         if (error) {
-            toast.add({ severity: 'error', detail: 'İlan eklenirken hata oluştu.', life: 2000 });
+            toast.add({ severity: 'error', summary: 'Hata', detail: 'İlan eklenirken hata oluştu.', life: 2000 });
+            console.log('db', error)
             throw error;
         }
     },
     onSuccess: () => {
         queryClient.invalidateQueries(['estates']);
-        toast.add({ severity: 'success', detail: 'İlan başarıyla eklendi.', life: 2000 });
+        toast.add({ severity: 'success', summary: 'Başarılı', detail: 'İlan başarıyla eklendi.', life: 2000 });
         resetForm();
     }
 });

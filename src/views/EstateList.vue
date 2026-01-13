@@ -16,12 +16,13 @@
                     }
                 }">
 
-                <!-- <Column field="image">
-                    <template>
-                        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=200&q=80"
-                            class="w-24 h-16 object-cover rounded shadow" />
+                <Column field="image">
+                    <template #body="slotProps">
+                        <img :src="slotProps.data.image || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                            :alt="slotProps.data.title"
+                            class="w-30 h-24 object-contain rounded shadow border border-slate-100 dark:border-zinc-800" />
                     </template>
-</Column> -->
+                </Column>
 
                 <Column field="title" header="İlan Başlığı" sortable></Column>
 
@@ -53,10 +54,10 @@
                 <Column header="İşlemler" style="min-width: 8rem">
                     <template #body="slotProps">
                         <div class="flex gap-2">
-                            <Button icon="pi pi-pencil" severity="contrast" @click="addEstate = true" rounded
-                                outlined />
+                            <Button icon="pi pi-pencil" severity="contrast" @click="onEditEstate(slotProps.data.id)"
+                                rounded outlined />
                             <Button icon="pi pi-trash" severity="danger" rounded outlined
-                                @click="confirmDelete(slotProps.data)" />
+                                @click="confirmDelete(slotProps.data.id)" />
                         </div>
                     </template>
                 </Column>
@@ -105,8 +106,9 @@
             </router-link>
         </div>
     </div>
-    <EditEstate v-model="addEstate" />
+    <EditEstate v-model="editEstate" :id="selectedId" />
     <ConfirmDialog />
+    <Toast position="bottom-center" />
 </template>
 
 <script setup>
@@ -123,11 +125,17 @@ import { useRouter } from 'vue-router';
 import EditEstate from '@/components/EditEstate.vue';
 import { useConfirm } from "primevue/useconfirm";
 import { supabase } from '@/supabase';
-import { useQuery } from '@tanstack/vue-query'
-const confirm = useConfirm();
+import { useQuery } from '@tanstack/vue-query';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { useQueryClient } from '@tanstack/vue-query';
 
+const queryClient = useQueryClient()
+const confirm = useConfirm();
 const router = useRouter();
-const addEstate = ref(false);
+const editEstate = ref(false);
+const selectedId = ref(null);
+const toast = useToast();
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
 };
@@ -138,7 +146,12 @@ const onRowClick = (event) => {
     router.push(`/estateDetails/${id}`);
 };
 
-const confirmDelete = () => {
+const onEditEstate = (id) => {
+    editEstate.value = true;
+    selectedId.value = id;
+};
+
+const confirmDelete = (id) => {
     confirm.require({
         message: 'Bu ilanı silmek istediğinize emin misiniz?',
         header: 'Silme Onayı',
@@ -147,10 +160,31 @@ const confirmDelete = () => {
         acceptLabel: 'Sil',
         rejectClass: 'p-button-secondary p-button-text',
         acceptClass: 'p-button-danger !text-white !bg-red-600',
-        accept: () => {
+        accept: async () => {
+            try {
+                const { error } = await supabase
+                    .from('estates')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                toast.add({
+                    severity: 'success',
+                    summary: 'Başarılı',
+                    detail: 'İlan silindi',
+                    life: 3000
+                });
+
+                queryClient.invalidateQueries(['estates']);
+
+            } catch (err) {
+                console.error("Silme hatası:", err.message);
+                toast.add({ severity: 'error', summary: 'Hata', detail: 'İlan silinemedi', life: 3000 });
+            }
         },
         reject: () => {
             console.log("Silme iptal edildi.");
+            toast.add({ severity: 'warn', summary: 'İptal', detail: 'Silme işlemi iptal edilidi.', life: 3000 });
         }
     });
 };
