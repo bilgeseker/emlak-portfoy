@@ -170,7 +170,7 @@ const toast = useToast();
 const filters = ref(null);    //Drawer'a gidecek kopya filtre
 const appliedFilters = ref({
     city: null, district: null, neighborhood: null, minPrice: null, maxPrice: null, rooms: null, m2_grossmin: null, m2_grossmax: null,
-    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null
+    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null
 });  // Tabloyu filtreleyen asıl veri
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
@@ -301,9 +301,12 @@ const filteredEstates = computed(() => {
             appliedFilters.value.heating.includes(estate.heating);
         const matchesKitchen = !appliedFilters.value.kitchen ||
             estate.kitchen === appliedFilters.value.kitchen;
+        const matchesUsage = !appliedFilters.value.usage_status || 
+            appliedFilters.value.usage_status.length === 0 || 
+            appliedFilters.value.usage_status.includes(estate.usage_status);
         return matchesCity && matchesDistrict && matchesNeighborhood && matchesMinPrice && matchesMaxPrice && matchesRooms &&
             matchesMinM2Gross && matchesMaxM2Gross && matchesMinM2Net && matchesMaxM2Net && matchesInsale && matchesPropertyType &&
-            matchesHeating && matchesKitchen;
+            matchesHeating && matchesKitchen && matchesUsage;
     });
 });
 

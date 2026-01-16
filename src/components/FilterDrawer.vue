@@ -4,7 +4,7 @@
         <div class="flex-1 overflow-y-auto p-1 pb-5 space-y-6 pt-4 custom-scrollbar">
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select fluid inputId="prop_types" :options="propertyTypes" filter optionLabel="label"
+                    <Select showClear fluid inputId="prop_types" :options="propertyTypes" filter optionLabel="label"
                         optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                         v-model="filters.property_type" />
                     <label for="prop_types" class="text-xs font-bold text-slate-600 dark:!text-zinc-200">Emlak
@@ -13,14 +13,14 @@
             </div>
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select fluid inputId="on_label" :options="allCities" v-model="filters.city" optionLabel="name"
+                    <Select showClear fluid inputId="on_label" :options="allCities" v-model="filters.city" optionLabel="name"
                         filter class="w-full" @change="onCityChange" />
                     <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="on_label">İl</label>
                 </FloatLabel>
             </div>
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select fluid inputId="district_label" :options="districtList" v-model="filters.district" filter
+                    <Select showClear fluid inputId="district_label" :options="districtList" v-model="filters.district" filter
                         class="w-full" :disabled="!filters?.city" />
                     <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
                         for="district_label">İlçe</label>
@@ -28,7 +28,7 @@
             </div>
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select fluid inputId="neighborhood_label" :options="neighborhoodList"
+                    <Select showClear fluid inputId="neighborhood_label" :options="neighborhoodList"
                         v-model="filters.neighborhood" filter class="w-full" :disabled="!filters?.district" />
                     <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
                         for="neighborhood_label">Mahalle</label>
@@ -37,9 +37,9 @@
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">Fiyat Aralığı</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber v-model="filters.minPrice" placeholder="min TL" fluid :useGrouping="true"
+                    <InputNumber  v-model="filters.minPrice" placeholder="min TL" fluid :useGrouping="true"
                         mode="currency" currency="TRY" locale="tr-TR" />
-                    <InputNumber v-model="filters.maxPrice" placeholder="max TL" fluid :useGrouping="true"
+                    <InputNumber  v-model="filters.maxPrice" placeholder="max TL" fluid :useGrouping="true"
                         mode="currency" currency="TRY" locale="tr-TR" />
                 </div>
             </div>
@@ -47,22 +47,22 @@
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">m² (Brüt)</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber v-model="filters.m2_grossmin" placeholder="min m²" fluid :useGrouping="true" />
-                    <InputNumber v-model="filters.m2_grossmax" placeholder="max m²" fluid :useGrouping="true" />
+                    <InputNumber  v-model="filters.m2_grossmin" placeholder="min m²" fluid :useGrouping="true" />
+                    <InputNumber  v-model="filters.m2_grossmax" placeholder="max m²" fluid :useGrouping="true" />
                 </div>
             </div>
 
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">m² (Net)</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber v-model="filters.m2_netmin" placeholder="min m²" fluid :useGrouping="true" />
-                    <InputNumber v-model="filters.m2_netmax" placeholder="max m²" fluid :useGrouping="true" />
+                    <InputNumber  v-model="filters.m2_netmin" placeholder="min m²" fluid :useGrouping="true" />
+                    <InputNumber  v-model="filters.m2_netmax" placeholder="max m²" fluid :useGrouping="true" />
                 </div>
             </div>
 
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select fluid :options="inSale" optionLabel="label" optionValue="value"
+                    <Select showClear fluid :options="inSale" optionLabel="label" optionValue="value"
                         class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="filters.in_sale"
                         inputId="insale_label" />
                     <label for="insale_label" class="text-xs font-bold text-slate-600 dark:!text-zinc-200">Tür</label>
@@ -72,7 +72,7 @@
             <template v-if="filters.property_type !== 'arsa'">
                 <div class="flex flex-col gap-2">
                     <FloatLabel class="w-full" variant="on">
-                        <MultiSelect display="chip" fluid inputId="rooms_label" :options="roomTypeOptions"
+                        <MultiSelect showClear display="chip" fluid inputId="rooms_label" :options="roomTypeOptions"
                             v-model="filters.rooms" optionLabel="label" optionValue="value" filter class="w-full" />
                         <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
                             for="rooms_label">Oda</label>
@@ -80,7 +80,7 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <FloatLabel class="w-full" variant="on">
-                        <Select fluid inputId="kitchen_label" :options="kitchenTypes" optionLabel="label"
+                        <Select showClear fluid inputId="kitchen_label" :options="kitchenTypes" optionLabel="label"
                             optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                             v-model="filters.kitchen" />
                         <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
@@ -89,7 +89,7 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <FloatLabel class="w-full" variant="on">
-                        <MultiSelect display="chip" fluid inputId="heating_label" v-model="filters.heating"
+                        <MultiSelect showClear display="chip" fluid inputId="heating_label" v-model="filters.heating"
                             :options="heatingOptions" optionLabel="label" optionValue="value" filter
                             class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
                         <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
@@ -98,9 +98,9 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <FloatLabel class="w-full" variant="on">
-                        <MultiSelect display="chip" fluid inputId="status_label" :options="usageTypes"
+                        <MultiSelect showClear display="chip" fluid inputId="status_label" :options="usageTypes"
                             optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                            v-model="usage_status" />
+                            v-model="filters.usage_status" />
                         <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Kullanım
                             Durumu</label>
                     </FloatLabel>
