@@ -12,7 +12,7 @@
         <img :src="isDark ? logowhite : logo" class="w-40">
       </header>
 
-      <div :class="['flex-1 overflow-y-auto' , route.name === 'giris' ? '' : 'p-6']">
+      <div :class="['flex-1 overflow-y-auto' , route.name === 'giris' ? '' : 'p-2']">
         <RouterView />
         <VueQueryDevtools :initial-is-open="true" />
       </div>
