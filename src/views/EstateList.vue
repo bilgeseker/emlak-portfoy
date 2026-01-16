@@ -170,7 +170,7 @@ const toast = useToast();
 const filters = ref(null);    //Drawer'a gidecek kopya filtre
 const appliedFilters = ref({
     city: null, district: null, neighborhood: null, minPrice: null, maxPrice: null, rooms: null, m2_grossmin: null, m2_grossmax: null,
-    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null
+    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null
 });  // Tabloyu filtreleyen asıl veri
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
@@ -271,42 +271,36 @@ const { isPending, data: estates } = useQuery({
 const filteredEstates = computed(() => {
     if (!estates.value) return [];
     return estates.value.filter(estate => {
-        const matchesCity = !appliedFilters.value.city ||
-            estate.city?.toLowerCase() === appliedFilters.value.city.name.toLowerCase();
-        const matchesDistrict = !appliedFilters.value.district ||
-            estate.district?.toLowerCase() === appliedFilters.value.district.toLowerCase();
-        const matchesNeighborhood = !appliedFilters.value.neighborhood ||
-            estate.neighborhood?.toLowerCase() === appliedFilters.value.neighborhood.toLowerCase();
-       const matchesRooms = !appliedFilters.value.rooms || 
-            appliedFilters.value.rooms.length === 0 || 
+        const matchesCity = !appliedFilters.value.city || estate.city?.toLowerCase() === appliedFilters.value.city.name.toLowerCase();
+        const matchesDistrict = !appliedFilters.value.district || estate.district?.toLowerCase() === appliedFilters.value.district.toLowerCase();
+        const matchesNeighborhood = !appliedFilters.value.neighborhood || estate.neighborhood?.toLowerCase() === appliedFilters.value.neighborhood.toLowerCase();
+        const matchesMinPrice = !appliedFilters.value.minPrice || estate.price >= appliedFilters.value.minPrice;
+        const matchesMaxPrice = !appliedFilters.value.maxPrice || estate.price <= appliedFilters.value.maxPrice;
+        const matchesMinM2Gross = !appliedFilters.value.m2_grossmin || estate.m2_gross >= appliedFilters.value.m2_grossmin;
+        const matchesMaxM2Gross = !appliedFilters.value.m2_grossmax || estate.m2_gross <= appliedFilters.value.m2_grossmax;
+        const matchesMinM2Net = !appliedFilters.value.m2_netmin || estate.m2_net >= appliedFilters.value.m2_netmin;
+        const matchesMaxM2Net = !appliedFilters.value.m2_netmax || estate.m2_net <= appliedFilters.value.m2_netmax;
+        const matchesInsale = !appliedFilters.value.in_sale || estate.in_sale === appliedFilters.value.in_sale;
+        const matchesPropertyType = !appliedFilters.value.property_type || estate.property_type === appliedFilters.value.property_type;
+        const matchesDeed = !appliedFilters.value.deed_status ||
+            appliedFilters.value.deed_status.length === 0 ||
+            appliedFilters.value.deed_status.includes(estate.deed_status);
+        // if (appliedFilters.value?.property_type !== 'arsa') {
+        const matchesBalcony = !appliedFilters.value.balcony || estate.balcony === appliedFilters.value.balcony;
+        const matchesRooms = !appliedFilters.value.rooms ||
+            appliedFilters.value.rooms.length === 0 ||
             appliedFilters.value.rooms.includes(estate.rooms);
-        const matchesMinPrice = !appliedFilters.value.minPrice ||
-            estate.price >= appliedFilters.value.minPrice;
-        const matchesMaxPrice = !appliedFilters.value.maxPrice ||
-            estate.price <= appliedFilters.value.maxPrice;
-        const matchesMinM2Gross = !appliedFilters.value.m2_grossmin ||
-            estate.m2_gross >= appliedFilters.value.m2_grossmin;
-        const matchesMaxM2Gross = !appliedFilters.value.m2_grossmax ||
-            estate.m2_gross <= appliedFilters.value.m2_grossmax;
-        const matchesMinM2Net = !appliedFilters.value.m2_netmin ||
-            estate.m2_net >= appliedFilters.value.m2_netmin;
-        const matchesMaxM2Net = !appliedFilters.value.m2_netmax ||
-            estate.m2_net <= appliedFilters.value.m2_netmax;
-        const matchesInsale = !appliedFilters.value.in_sale ||
-            estate.in_sale === appliedFilters.value.in_sale;
-        const matchesPropertyType = !appliedFilters.value.property_type ||
-            estate.property_type === appliedFilters.value.property_type;
-        const matchesHeating = !appliedFilters.value.heating || 
-            appliedFilters.value.heating.length === 0 || 
+        const matchesKitchen = !appliedFilters.value.kitchen || estate.kitchen === appliedFilters.value.kitchen;
+        const matchesHeating = !appliedFilters.value.heating ||
+            appliedFilters.value.heating.length === 0 ||
             appliedFilters.value.heating.includes(estate.heating);
-        const matchesKitchen = !appliedFilters.value.kitchen ||
-            estate.kitchen === appliedFilters.value.kitchen;
-        const matchesUsage = !appliedFilters.value.usage_status || 
-            appliedFilters.value.usage_status.length === 0 || 
+        const matchesUsage = !appliedFilters.value.usage_status ||
+            appliedFilters.value.usage_status.length === 0 ||
             appliedFilters.value.usage_status.includes(estate.usage_status);
+        // }
         return matchesCity && matchesDistrict && matchesNeighborhood && matchesMinPrice && matchesMaxPrice && matchesRooms &&
             matchesMinM2Gross && matchesMaxM2Gross && matchesMinM2Net && matchesMaxM2Net && matchesInsale && matchesPropertyType &&
-            matchesHeating && matchesKitchen && matchesUsage;
+            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony;
     });
 });
 

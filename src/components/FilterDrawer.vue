@@ -13,15 +13,15 @@
             </div>
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select showClear fluid inputId="on_label" :options="allCities" v-model="filters.city" optionLabel="name"
-                        filter class="w-full" @change="onCityChange" />
+                    <Select showClear fluid inputId="on_label" :options="allCities" v-model="filters.city"
+                        optionLabel="name" filter class="w-full" @change="onCityChange" />
                     <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="on_label">İl</label>
                 </FloatLabel>
             </div>
             <div class="flex flex-col gap-2">
                 <FloatLabel class="w-full" variant="on">
-                    <Select showClear fluid inputId="district_label" :options="districtList" v-model="filters.district" filter
-                        class="w-full" :disabled="!filters?.city" />
+                    <Select showClear fluid inputId="district_label" :options="districtList" v-model="filters.district"
+                        filter class="w-full" :disabled="!filters?.city" />
                     <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
                         for="district_label">İlçe</label>
                 </FloatLabel>
@@ -37,9 +37,9 @@
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">Fiyat Aralığı</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber  v-model="filters.minPrice" placeholder="min TL" fluid :useGrouping="true"
+                    <InputNumber v-model="filters.minPrice" placeholder="min TL" fluid :useGrouping="true"
                         mode="currency" currency="TRY" locale="tr-TR" />
-                    <InputNumber  v-model="filters.maxPrice" placeholder="max TL" fluid :useGrouping="true"
+                    <InputNumber v-model="filters.maxPrice" placeholder="max TL" fluid :useGrouping="true"
                         mode="currency" currency="TRY" locale="tr-TR" />
                 </div>
             </div>
@@ -47,16 +47,16 @@
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">m² (Brüt)</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber  v-model="filters.m2_grossmin" placeholder="min m²" fluid :useGrouping="true" />
-                    <InputNumber  v-model="filters.m2_grossmax" placeholder="max m²" fluid :useGrouping="true" />
+                    <InputNumber v-model="filters.m2_grossmin" placeholder="min m²" fluid :useGrouping="true" />
+                    <InputNumber v-model="filters.m2_grossmax" placeholder="max m²" fluid :useGrouping="true" />
                 </div>
             </div>
 
             <div class="flex flex-col gap-2">
                 <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200">m² (Net)</label>
                 <div class="grid grid-cols-2 gap-2">
-                    <InputNumber  v-model="filters.m2_netmin" placeholder="min m²" fluid :useGrouping="true" />
-                    <InputNumber  v-model="filters.m2_netmax" placeholder="max m²" fluid :useGrouping="true" />
+                    <InputNumber v-model="filters.m2_netmin" placeholder="min m²" fluid :useGrouping="true" />
+                    <InputNumber v-model="filters.m2_netmax" placeholder="max m²" fluid :useGrouping="true" />
                 </div>
             </div>
 
@@ -89,6 +89,15 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <FloatLabel class="w-full" variant="on">
+                        <Select showClear fluid inputId="kitchen_label" :options="booleans" optionLabel="label"
+                            optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                            v-model="filters.balcony" />
+                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
+                            for="kitchen_label">Balkon</label>
+                    </FloatLabel>
+                </div>
+                <div class="flex flex-col gap-2">
+                    <FloatLabel class="w-full" variant="on">
                         <MultiSelect showClear display="chip" fluid inputId="heating_label" v-model="filters.heating"
                             :options="heatingOptions" optionLabel="label" optionValue="value" filter
                             class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
@@ -106,6 +115,16 @@
                     </FloatLabel>
                 </div>
             </template>
+
+            <div class="flex flex-col gap-2">
+                <FloatLabel class="w-full" variant="on">
+                    <MultiSelect filter showClear display="chip" fluid inputId="deed_label" :options="deedStatus"
+                        optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                        v-model="filters.deed_status" />
+                    <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="deed_label">Tapu
+                        Durumu</label>
+                </FloatLabel>
+            </div>
         </div>
 
 
@@ -126,7 +145,7 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import { defineModel, computed } from 'vue';
 import { getCities, getDistrictsByCityCode, getNeighbourhoodsByCityCodeAndDistrict } from 'turkey-neighbourhoods';
-import { roomTypeOptions, inSale, propertyTypes, heatingOptions, kitchenTypes, usageTypes } from '@/constants/constants.js'
+import { roomTypeOptions, inSale, propertyTypes, heatingOptions, kitchenTypes, usageTypes, deedStatus, booleans } from '@/constants/constants.js'
 const filters = defineModel();
 
 const onCityChange = () => {
