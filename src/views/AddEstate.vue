@@ -4,41 +4,39 @@
             <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Ekle</h1>
         </div>
         <div class="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Başlığı</label>
-            <InputText v-model="title" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" />
-        </div>
-
-         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Emlak Tipi</label>
-            <Select :options="[
-                { label: 'Konut', value: 'konut' },
-                { label: 'İş Yeri', value: 'is_yeri' },
-                { label: 'Arsa', value: 'arsa' },
-                { label: 'Konut Projeleri', value: 'konut_proje' },
-                { label: 'Bina', value: 'bina' },
-                { label: 'Devre Mülk', value: 'devre_mulk' },
-                { label: 'Turistik Tesis', value: 'turistik_tesis' },
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="property_type" />
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Başlığı<span
+                    class="font-bold text-red-500"> *</span></label>
+            <InputText v-model="title" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" :class="{ 'p-invalid !border-red-500': submitted && !title }"/>
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İl</label>
-            <Select v-model="selectedCity" :options="allCities" optionLabel="name" filter
-                    placeholder="İl Seçiniz" @change="onCityChange">
-                </Select>
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Emlak Tipi<span
+                    class="font-bold text-red-500"> *</span></label>
+            <Select :options="propertyTypes" filter optionLabel="label" optionValue="value"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="property_type" :class="{ 'p-invalid !border-red-500': submitted && !propertyTypes }"/>
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlçe</label>
-            <Select v-model="selectedDistrict" :options="districtList" filter :disabled="!selectedCity"
-                placeholder="Mahalle Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İl<span
+                    class="font-bold text-red-500"> *</span></label>
+            <Select v-model="selectedCity" :options="allCities" optionLabel="name" filter placeholder="İl Seçiniz" :class="{ 'p-invalid !border-red-500': submitted && !selectedCity }"
+                @change="onCityChange">
+            </Select>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlçe<span
+                    class="font-bold text-red-500"> *</span></label>
+            <Select v-model="selectedDistrict" :options="districtList" filter :disabled="!selectedCity"  :class="{ 'p-invalid !border-red-500': submitted && !selectedDistrict }"
+                placeholder="İlçe Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
                 class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mahalle</label>
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mahalle<span
+                    class="font-bold text-red-500"> *</span></label>
             <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="selectedNeighborhood" :options="neighborhoodList" filter :disabled="!selectedDistrict"
+            <Select v-model="selectedNeighborhood" :options="neighborhoodList" filter :disabled="!selectedDistrict"  :class="{ 'p-invalid !border-red-500': submitted && !selectedNeighborhood }"
                 placeholder="Mahalle Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
                 class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
         </div>
@@ -50,153 +48,166 @@
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Net)</label>
-            <InputNumber v-model="m2_net" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                inputClass="p-3 md:p-2 w-full" />
-        </div>
-        
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bulunduğu Kat</label>
-            <InputNumber v-model="floor_located" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Net)<span
+                    class="font-bold text-red-500"> *</span></label>
+            <InputNumber v-model="m2_net" class="w-full dark:bg-zinc-800 dark:border-zinc-700"  :class="{ 'p-invalid !border-red-500': submitted && !m2_net }"
                 inputClass="p-3 md:p-2 w-full" />
         </div>
 
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kat Sayısı</label>
-            <InputNumber v-model="num_of_floors" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                inputClass="p-3 md:p-2 w-full" />
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Tür</label>
+            <Select :options="inSale" optionLabel="label" optionValue="value"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="in_sale" />
         </div>
+        <template v-if="property_type !== 'arsa'">
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Oda Sayısı</label>
+                <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
+                <Select v-model="selectedRoom" :options="roomTypeOptions" filter optionLabel="label" optionValue="value"
+                    :virtualScrollerOptions="{ itemSize: 38 }" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bulunduğu Kat</label>
+                <InputNumber v-model="floor_located" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                    inputClass="p-3 md:p-2 w-full" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bina Yaşı</label>
-            <InputNumber v-model="building_age" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                inputClass="p-3 md:p-2 w-full" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kat Sayısı</label>
+                <InputNumber v-model="num_of_floors" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                    inputClass="p-3 md:p-2 w-full" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Isıtma</label>
-            <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="heating" :options="heatingOptions" optionLabel="label" optionValue="value" placeholder="Isıtma Tipi Seçiniz"
-                filter class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bina Yaşı</label>
+                <InputNumber v-model="building_age" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                    inputClass="p-3 md:p-2 w-full" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Banyo Sayısı</label>
-            <InputNumber v-model="num_of_bath" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                inputClass="p-3 md:p-2 w-full" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Isıtma</label>
+                <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
+                <Select v-model="heating" :options="heatingOptions" optionLabel="label" optionValue="value"
+                    placeholder="Isıtma Tipi Seçiniz" filter class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mutfak</label>
-            <Select :options="[
-                { label: 'Açık (Amerikan)', value: 'acik' },
-                { label: 'Kapalı', value: 'kapali' }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="kitchen" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Banyo Sayısı</label>
+                <InputNumber v-model="num_of_bath" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                    inputClass="p-3 md:p-2 w-full" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Balkon</label>
-            <Select :options="[
-                { label: 'Var', value: true },
-                { label: 'Yok', value: false }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="balcony" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mutfak</label>
+                <Select :options="kitchenTypes" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="kitchen" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Asansör</label>
-            <Select :options="[
-                { label: 'Var', value: true },
-                { label: 'Yok', value: false }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="lift" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Balkon</label>
+                <Select :options="booleans" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="balcony" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Otopark</label>
-            <Select :options="[
-                { label: 'Açık Otopark', value: 'acik_otopark' },
-                { label: 'Kapalı Otopark', value: 'kapali_otopark' },
-                { label: 'Açık & Kapalı Otopark', value: 'acikkapali_otopark' },
-                { label: 'Yok', value: 'yok' }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="parking" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Asansör</label>
+                <Select :options="booleans" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="lift" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Eşyalı</label>
-            <Select :options="[
-                { label: 'Evet', value: true },
-                { label: 'Hayır', value: false }
-            ]" optionLabel="label" optionValue="value"  class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="furnished" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Otopark</label>
+                <Select :options="parkingTypes" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="parking" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site İçerisinde</label>
-            <Select v-model="isInSite" :options="[
-                { label: 'Evet', value: true },
-                { label: 'Hayır', value: false }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Eşyalı</label>
+                <Select :options="booleans2" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="furnished" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site Adı</label>
-            <InputText :disabled="!isInSite"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" v-model="site_name" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site İçerisinde</label>
+                <Select v-model="isInSite" :options="booleans2" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kullanım Durumu</label>
-            <Select :options="[
-                { label: 'Boş', value: 'bos' },
-                { label: 'Kiracılı', value: 'kiracili' },
-                { label: 'Mülk Sahibi', value: 'mulk_sahibi' }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="usage_status" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site Adı</label>
+                <InputText :disabled="!isInSite" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2"
+                    v-model="site_name" />
+            </div>
 
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Aidat (TL)</label>
-            <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                v-model="member_fee" />
-        </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kullanım Durumu</label>
+                <Select :options="usageTypes" optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="usage_status" />
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Aidat (TL)</label>
+                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                    v-model="member_fee" />
+            </div>
+        </template>
+        <template v-if="property_type === 'arsa'">
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İmar Durumu</label>
+                <Select :options="zoningStatusTypes" filter optionLabel="label" optionValue="value"
+                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="zoning_status" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Parsel No</label>
+                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                    v-model="parsel_no" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Pafta No</label>
+                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                    v-model="pafta_no" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kaks (Emsal)</label>
+                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                    v-model="kaks" />
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Gabari</label>
+                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                    v-model="gabari" />
+            </div>
+        </template>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Takas</label>
-            <Select :options="[
-                { label: 'Evet', value: true },
-                { label: 'Hayır', value: false }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="swap" />
+            <Select :options="booleans2" optionLabel="label" optionValue="value"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="swap" />
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Tapu Durumu</label>
-            <Select :options="[
-                { label: 'Kat Mülkiyetli', value: 'kat_mülkiyetli' },
-                { label: 'Kat İrtifaklı', value: 'kat_irtifakli' },
-                { label: 'Hisseli Tapu', value: 'hisseli_tapu' },
-                { label: 'Müstakil Tapulu', value: 'müstakil_tapu' },
-                { label: 'Arsa Tapulu', value: 'arsa_tapu' },
-                { label: 'Kooperatif Hisseli Tapu', value: 'kooperatif_tapu' },
-                { label: 'İntifa Hakkı Tesisli', value: 'intifa_hakki' },
-                { label: 'Yurt Dışı Tapulu', value: 'yurtdisi_tapu' },
-                { label: 'Tapu Kaydı Yok', value: 'tapu_kaydi_yok' },
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="deed_status" />
+            <Select :options="deedStatus" filter optionLabel="label" optionValue="value"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="deed_status" />
         </div>
 
         <div class="flex flex-col gap-2">
             <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Krediye Uygun</label>
-            <Select :options="[
-                { label: 'Evet', value: true },
-                { label: 'Hayır', value: false }
-            ]" optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="credit" />
-        </div>
-        
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
-            <DatePicker v-model="created_at" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy" />
+            <Select :options="booleans2" optionLabel="label" optionValue="value"
+                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="credit" />
         </div>
 
+
         <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Fiyat (TL)</label>
-            <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY"
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi<span
+                    class="font-bold text-red-500"> *</span></label>
+            <DatePicker required="true" v-model="created_at" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy" :class="{ 'p-invalid !border-red-500': submitted && !created_at }"/>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Fiyat (TL)<span
+                    class="font-bold text-red-500"> *</span></label>
+            <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY" :class="{ 'p-invalid !border-red-500': submitted && !price }"
                 locale="tr-TR" inputClass="p-3 md:p-2 w-full" v-model="price" />
         </div>
 
@@ -263,7 +274,10 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { supabase } from '@/supabase';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import {heatingOptions} from '../constants/heating_types.js';
+import {
+    heatingOptions, roomTypeOptions, propertyTypes, kitchenTypes, booleans, parkingTypes, booleans2,
+    usageTypes, zoningStatusTypes, deedStatus, inSale
+} from '../constants/constants.js';
 import { getCities, getDistrictsByCityCode, getNeighbourhoodsByCityCodeAndDistrict } from 'turkey-neighbourhoods';
 const allCities = getCities();
 // const props = defineProps({ modelValue: Boolean, id: Number });
@@ -295,9 +309,16 @@ const property_type = ref(null);
 const image = ref(null);
 const isInSite = ref(null);
 const furnished = ref(null);
+const selectedRoom = ref(null);
+const zoning_status = ref(null);
+const parsel_no = ref(null);
+const pafta_no = ref(null);
+const kaks = ref(null);
+const gabari = ref(null);
+const in_sale = ref(null);
 const queryClient = useQueryClient();
 const toast = useToast();
-
+const submitted = ref(false);
 
 function onFileSelect(event) {
     const file = event.files[0];
@@ -323,6 +344,7 @@ const onCityChange = () => {
 };
 
 const districtList = computed(() => {
+    if(!selectedCity.value?.code) return []
     return getDistrictsByCityCode(selectedCity.value?.code);
 });
 
@@ -332,7 +354,7 @@ const neighborhoodList = computed(() => {
     }
     try {
         return getNeighbourhoodsByCityCodeAndDistrict(
-            selectedCity.value.code, 
+            selectedCity.value.code,
             selectedDistrict.value
         );
     } catch (error) {
@@ -344,8 +366,9 @@ const neighborhoodList = computed(() => {
 const saveEstate = () => {
 
     try {
-        if(!selectedCity.value.name || !selectedDistrict.value || !selectedNeighborhood.value || !created_at.value){
-            toast.add({ severity: 'error', summary: 'Hata',detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
+        submitted.value = true;
+        if (!selectedCity.value?.name || !selectedDistrict.value || !selectedNeighborhood.value || !created_at.value) {
+            toast.add({ severity: 'error', summary: 'Hata', detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
             return;
         }
         const date = new Date(created_at.value);
@@ -367,23 +390,30 @@ const saveEstate = () => {
             building_age: building_age.value || null,
             heating: heating.value || null,
             num_of_bath: num_of_bath.value || null,
-            kitchen: kitchen.value || null,
-            balcony: balcony.value || null,
-            lift: lift.value || null,
-            parking: parking.value || null,
-            furnished: furnished.value || null,
-            in_site: isInSite.value || null,
+            kitchen: kitchen.value ?? null,
+            balcony: balcony.value ?? null,
+            lift: lift.value ?? null,
+            parking: parking.value ?? null,
+            furnished: furnished.value ?? null,
+            in_site: isInSite.value ?? null,
             site_name: site_name.value || null,
             usage_status: usage_status.value || null,
             member_fee: member_fee.value || null,
-            swap: swap.value || null,
-            credit: credit.value || null,
+            swap: swap.value ?? null,
+            credit: credit.value ?? null,
             price: price.value,
             notes: notes.value || null,
             deed_status: deed_status.value,
             img_id: image.value || null,
-            property_type: property_type.value ,
-            title: title.value
+            property_type: property_type.value,
+            title: title.value,
+            rooms: selectedRoom.value || null,
+            zoning_status: zoning_status.value || null,
+            parsel_no: parsel_no.value || null,
+            pafta_no: pafta_no.value || null,
+            kaks: kaks.value || null,
+            gabari: gabari.value || null,
+            in_sale: in_sale.value || null
         };
         console.log(payload)
         mutation.mutate(payload);
@@ -412,7 +442,7 @@ const mutation = useMutation({
                 lift: payload.lift,
                 parking: payload.parking,
                 furnished: payload.furnished,
-                in_site: payload.isInSite,
+                in_site: payload.in_site,
                 site_name: payload.site_name,
                 usage_status: payload.usage_status,
                 member_fee: payload.member_fee,
@@ -423,7 +453,14 @@ const mutation = useMutation({
                 deed_status: payload.deed_status,
                 img_id: payload.img_id,
                 title: payload.title,
-                property_type: payload.property_type
+                property_type: payload.property_type,
+                rooms: payload.rooms,
+                zoning_status: payload.zoning_status,
+                parsel_no: payload.parsel_no,
+                pafta_no: payload.pafta_no,
+                kaks: payload.kaks,
+                gabari: payload.gabari,
+                in_sale: payload.in_sale
             }
         ]);
 
