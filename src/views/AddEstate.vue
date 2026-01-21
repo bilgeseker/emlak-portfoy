@@ -468,7 +468,6 @@ const saveEstate = async () => {
             in_sale: in_sale.value || null,
             img_url: imageUrl || null
         };
-        console.log(payload)
         mutation.mutate(payload);
     } catch (error) {
         console.log(error)

@@ -33,6 +33,11 @@
                 </Column>
 
                 <Column field="title" header="İlan Başlığı" sortable></Column>
+                <Column field="property_type" header="Kategori" sortable>
+                    <template #body="{ data, field }">
+                        {{ getLabel(data[field], propertyTypes) }}
+                    </template>
+                </Column>
 
                 <Column field="rooms" header="Oda" sortable>
                     <template #body="{ data, field }">
@@ -155,7 +160,7 @@ import { useQuery } from '@tanstack/vue-query';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useQueryClient } from '@tanstack/vue-query';
-import { roomTypeOptions } from '@/constants/constants.js'
+import { roomTypeOptions, propertyTypes } from '@/constants/constants.js'
 import FilterDrawer from '@/components/FilterDrawer.vue';
 // import { getCities } from 'turkey-neighbourhoods';
 
@@ -171,7 +176,7 @@ const filters = ref(null);    //Drawer'a gidecek kopya filtre
 const appliedFilters = ref({
     city: null, district: null, neighborhood: null, minPrice: null, maxPrice: null, rooms: null, m2_grossmin: null, m2_grossmax: null,
     m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null,
-    in_site: null
+    in_site: null, zoning_status: null
 });  // Tabloyu filtreleyen asıl veri
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
@@ -301,9 +306,13 @@ const filteredEstates = computed(() => {
             
         const matchesInSite = !appliedFilters.value.in_site || estate.in_site === appliedFilters.value.in_site;
         // }
+        
+        const matchesZoning = !appliedFilters.value.zoning_status ||
+            appliedFilters.value.zoning_status.length === 0 ||
+            appliedFilters.value.zoning_status.includes(estate.zoning_status);
         return matchesCity && matchesDistrict && matchesNeighborhood && matchesMinPrice && matchesMaxPrice && matchesRooms &&
             matchesMinM2Gross && matchesMaxM2Gross && matchesMinM2Net && matchesMaxM2Net && matchesInsale && matchesPropertyType &&
-            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony && matchesInSite;
+            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony && matchesInSite && matchesZoning;
     });
 });
 
@@ -325,7 +334,7 @@ const resetFilters = () => {
 // script setup içine ekleyin
 const getOptimizedUrl = (url) => {
     if (!url || !url.includes('cloudinary')) return url;
-    return url.replace('/upload/', '/upload/w_300,h_200,c_fill,q_auto,f_auto/');
+    return url.replace('/upload/', '/upload/w_150,c_thumb,q_auto,f_auto/');
 };
 </script>
 <style scoped>

@@ -235,7 +235,7 @@
                         class="p-button-outlined" chooseLabel="Dosya Seç" />
 
                     <div v-if="image" class="relative group">
-                        <img :src="image" alt="Önizleme"
+                        <img :src="getOptimizedUrl(image)" alt="Önizleme"
                             class="shadow-lg rounded-xl w-full sm:w-80 h-52 object-contain border-2 border-dashed border-slate-200 dark:border-zinc-700 p-1" />
                         <button @click="clearImage"
                             class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-600 transition-colors">
@@ -316,7 +316,6 @@ const price = ref(null);
 const notes = ref(null);
 const property_type = ref(null);
 const image = ref(null);
-const selectedFile = ref(null);
 const isInSite = ref(null);
 const furnished = ref(null);
 const selectedRoom = ref(null);
@@ -337,17 +336,29 @@ const neighborhoodList = ref([]);
 // const saveEstate = () => {
 //     emit('update:modelValue', false)
 // };
+const selectedFile = ref(null); // Ham dosya objesini tutmak için
 
 function onFileSelect(event) {
     const file = event.files[0];
-    const reader = new FileReader();
+    selectedFile.value = file; // Dosyayı sakla
 
-    reader.onload = async (e) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
         image.value = e.target.result;
     };
-
     reader.readAsDataURL(file);
 }
+
+// function onFileSelect(event) {
+//     const file = event.files[0];
+//     const reader = new FileReader();
+
+//     reader.onload = async (e) => {
+//         image.value = e.target.result;
+//     };
+
+//     reader.readAsDataURL(file);
+// }
 
 const clearImage = () => {
     image.value = null;
@@ -383,6 +394,11 @@ const { data } = useQuery({
     refetchOnWindowFocus: false,
 });
 
+const getOptimizedUrl = (url) => {
+    if (!url || !url.includes('cloudinary')) return url;
+    return url.replace('/upload/', '/upload/w_150,c_thumb,q_auto,f_auto/');
+};
+
 watch(data, (newData) => {
     if (newData) {
         title.value = newData.title?.trim() || null;
@@ -407,7 +423,7 @@ watch(data, (newData) => {
         price.value = newData.price || null;
         notes.value = newData.notes || null;
         property_type.value = newData.property_type || null;
-        image.value = newData.image || null;
+        image.value = newData.img_url || null;
         furnished.value = newData.furnished;
         selectedRoom.value = newData.rooms || null;
         zoning_status.value = newData.zoning_status || null;
@@ -434,6 +450,32 @@ watch(data, (newData) => {
     }
 });
 
+// Cloudinary Bilgileriniz
+const cloudName = "cozumemlak";
+const uploadPreset = "ml_default"; // Panelde oluşturduğunuz isim
+
+const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", uploadPreset);
+
+    const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        {
+            method: "POST",
+            body: formData,
+        }
+    );
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error.message);
+    }
+
+    const data = await response.json();
+    return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
+};
+
 const saveEstate = async () => {
     try {
         submitted.value = true;
@@ -441,13 +483,20 @@ const saveEstate = async () => {
             toast.add({ severity: 'error', summary: 'Hata', detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
             return;
         }
+
+        let imageUrl = image.value; 
+
+        if (selectedFile.value) {
+            toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 1500 });
+            imageUrl = await uploadToCloudinary(selectedFile.value);
+        }
         const date = new Date(created_at.value);
         const y = date.getFullYear()
         const m = String(date.getMonth() + 1).padStart(2, "0")
         const d = String(date.getDate()).padStart(2, "0")
 
         const finalDate = `${y}-${m}-${d}`;
-        console.log(finalDate)
+
         const payload = {
             created_at: finalDate,
             city: selectedCity.value.name,
@@ -474,7 +523,7 @@ const saveEstate = async () => {
             price: price.value,
             notes: notes.value || null,
             deed_status: deed_status.value,
-            img_id: image.value || null,
+            // img_id: image.value || null,
             property_type: property_type.value,
             title: title.value,
             rooms: selectedRoom.value || null,
@@ -483,7 +532,8 @@ const saveEstate = async () => {
             pafta_no: pafta_no.value || null,
             kaks: kaks.value || null,
             gabari: gabari.value || null,
-            in_sale: in_sale.value || null
+            in_sale: in_sale.value || null,
+            img_url: imageUrl || null
         };
         const { error } = await supabase
             .from("estates")
@@ -513,7 +563,7 @@ const saveEstate = async () => {
                 price: payload.price,
                 notes: payload.notes,
                 deed_status: payload.deed_status,
-                img_id: payload.img_id,
+                // img_id: payload.img_id,
                 property_type: payload.property_type,
                 title: payload.title,
                 rooms: payload.rooms,
@@ -522,7 +572,8 @@ const saveEstate = async () => {
                 pafta_no: payload.pafta_no,
                 kaks: payload.kaks,
                 gabari: payload.gabari,
-                in_sale: payload.in_sale
+                in_sale: payload.in_sale,
+                img_url: payload.img_url
             })
             .eq('id', props.id);
         if (error) {
