@@ -13,6 +13,8 @@
   },
   "main": "background.js",
   "dependencies": {
+    "@cloudinary/url-gen": "^1.22.0",
+    "@cloudinary/vue": "^1.13.3",
     "@primeuix/themes": "^2.0.2",
     "@supabase/supabase-js": "^2.89.0",
     "@tanstack/react-query-devtools": "^5.91.2",

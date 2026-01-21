@@ -26,7 +26,7 @@
 
                 <Column field="image">
                     <template #body="slotProps">
-                        <img :src="slotProps.data.image || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                        <img :src="getOptimizedUrl(slotProps.data.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
                             :alt="slotProps.data.title"
                             class="w-30 h-24 object-contain rounded shadow border border-slate-100 dark:border-zinc-800" />
                     </template>
@@ -93,7 +93,7 @@
 
                 <div class="flex gap-4">
                     <div @click="router.push(`/estateDetails/${item.id}`)" class="cursor-pointer flex-shrink-0">
-                        <img :src="item.image || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                        <img :src="getOptimizedUrl(item.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
                             class="w-24 h-20 object-cover rounded-lg shadow-sm" />
                     </div>
 
@@ -170,7 +170,8 @@ const toast = useToast();
 const filters = ref(null);    //Drawer'a gidecek kopya filtre
 const appliedFilters = ref({
     city: null, district: null, neighborhood: null, minPrice: null, maxPrice: null, rooms: null, m2_grossmin: null, m2_grossmax: null,
-    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null
+    m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null,
+    in_site: null
 });  // Tabloyu filtreleyen asıl veri
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
@@ -297,10 +298,12 @@ const filteredEstates = computed(() => {
         const matchesUsage = !appliedFilters.value.usage_status ||
             appliedFilters.value.usage_status.length === 0 ||
             appliedFilters.value.usage_status.includes(estate.usage_status);
+            
+        const matchesInSite = !appliedFilters.value.in_site || estate.in_site === appliedFilters.value.in_site;
         // }
         return matchesCity && matchesDistrict && matchesNeighborhood && matchesMinPrice && matchesMaxPrice && matchesRooms &&
             matchesMinM2Gross && matchesMaxM2Gross && matchesMinM2Net && matchesMaxM2Net && matchesInsale && matchesPropertyType &&
-            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony;
+            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony && matchesInSite;
     });
 });
 
@@ -318,6 +321,12 @@ const resetFilters = () => {
 // const applyFilter = () => {
 //     visibleFilter.value = false;
 // }
+
+// script setup içine ekleyin
+const getOptimizedUrl = (url) => {
+    if (!url || !url.includes('cloudinary')) return url;
+    return url.replace('/upload/', '/upload/w_300,h_200,c_fill,q_auto,f_auto/');
+};
 </script>
 <style scoped>
 .p-paginator {

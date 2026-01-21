@@ -114,6 +114,14 @@
                             Durumu</label>
                     </FloatLabel>
                 </div>
+                <div class="flex flex-col gap-2">
+                    <FloatLabel class="w-full" variant="on">
+                        <Select showClear display="chip" fluid inputId="status_label" :options="booleans2"
+                            optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
+                            v-model="filters.in_site" />
+                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Site İçerisinde</label>
+                    </FloatLabel>
+                </div>
             </template>
 
             <div class="flex flex-col gap-2">
@@ -145,7 +153,7 @@ import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
 import { defineModel, computed } from 'vue';
 import { getCities, getDistrictsByCityCode, getNeighbourhoodsByCityCodeAndDistrict } from 'turkey-neighbourhoods';
-import { roomTypeOptions, inSale, propertyTypes, heatingOptions, kitchenTypes, usageTypes, deedStatus, booleans } from '@/constants/constants.js'
+import { roomTypeOptions, inSale, propertyTypes, heatingOptions, kitchenTypes, usageTypes, deedStatus, booleans, booleans2 } from '@/constants/constants.js'
 const filters = defineModel();
 
 const onCityChange = () => {

@@ -18,7 +18,7 @@
             <div class="lg:col-span-7">
                 <div
                     class="relative overflow-hidden rounded-2xl shadow-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800">
-                    <img :src="selectedEstate?.image || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80'"
+                    <img :src="getOptimizedUrl(selectedEstate?.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=1200&q=80'"
                         :alt="selectedEstate.title" class="w-full h-[400px] md:h-[500px] object-contain" />
                     <!-- <div
                         class="absolute bottom-4 right-4 bg-black/50 text-white px-3 py-1 rounded-md text-sm backdrop-blur-sm">
@@ -255,7 +255,9 @@ const formatPrice = (value) => {
     if (!value) return "0 TL";
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
 };
-
-
+const getOptimizedUrl = (url) => {
+    if (!url || !url.includes('cloudinary')) return url;
+    return url.replace('/upload/', '/upload/w_400,h_300,c_fill,q_auto,f_auto/');
+};
 
 </script>
