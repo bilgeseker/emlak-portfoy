@@ -20,7 +20,7 @@
                         class="font-bold text-red-500"> *</span></label>
                 <Select :options="propertyTypes" optionLabel="label" optionValue="value" filter
                     class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="property_type"
-                    :class="{ 'p-invalid !border-red-500': submitted && !propertyTypes }" />
+                    :class="{ 'p-invalid !border-red-500': submitted && !property_type }" />
             </div>
 
             <div class="flex flex-col gap-2">
@@ -53,14 +53,14 @@
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Brüt)</label>
                 <InputNumber v-model="m2_gross" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" />
+                    inputClass="p-3 md:p-2 w-full" :invalid="submitted && !m2_gross" />
             </div>
 
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Net)<span
                         class="font-bold text-red-500"> *</span></label>
                 <InputNumber v-model="m2_net" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" :class="{ 'p-invalid !border-red-500': submitted && !m2_net }" />
+                    inputClass="p-3 md:p-2 w-full" :invalid="submitted && !m2_net" />
             </div>
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Tür</label>
@@ -177,13 +177,17 @@
                 </div>
                 <div class="flex flex-col gap-2">
                     <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kaks (Emsal)</label>
-                    <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                        v-model="kaks" />
+                    <!-- <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                        v-model="kaks" /> -->
+                    <Select v-model="kaks" :options="kaksSecenekleri" optionLabel="label" optionValue="value"
+                        class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
                 </div>
                 <div class="flex flex-col gap-2">
                     <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Gabari</label>
-                    <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                        v-model="gabari" />
+                    <!-- <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
+                        v-model="gabari" /> -->
+                    <Select v-model="gabari" :options="gabariSecenekleri" optionLabel="label" optionValue="value"
+                        class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
                 </div>
             </template>
 
@@ -206,8 +210,7 @@
             </div>
 
             <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi<span
-                        class="font-bold text-red-500"> *</span></label>
+                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
                 <DatePicker required="true" v-model="created_at" showIcon fluid iconDisplay="input"
                     dateFormat="dd/mm/yy" :class="{ 'p-invalid !border-red-500': submitted && !created_at }" />
             </div>
@@ -217,7 +220,7 @@
                         class="font-bold text-red-500"> *</span></label>
                 <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY"
                     locale="tr-TR" inputClass="p-3 md:p-2 w-full" v-model="price"
-                    :class="{ 'p-invalid !border-red-500': submitted && !price }" />
+                    :invalid="submitted && !price" />
             </div>
 
             <!-- <div class="flex flex-col gap-2">
@@ -286,7 +289,7 @@ import { supabase } from '@/supabase';
 import { useToast } from 'primevue/usetoast';
 import {
     heatingOptions, roomTypeOptions, propertyTypes, kitchenTypes, booleans, parkingTypes, booleans2,
-    usageTypes, zoningStatusTypes, deedStatus, inSale
+    usageTypes, zoningStatusTypes, deedStatus, inSale, kaksSecenekleri, gabariSecenekleri
 } from '../constants/constants.js';
 import { getCities, getDistrictsByCityCode, getNeighbourhoodsByCityCodeAndDistrict } from 'turkey-neighbourhoods';
 const allCities = getCities();
@@ -473,22 +476,34 @@ const uploadToCloudinary = async (file) => {
     }
 
     const data = await response.json();
-    return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
+    // return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
+    return data; 
 };
 
 const saveEstate = async () => {
+    let response = null;
+    let public_id = null;
     try {
         submitted.value = true;
-        if (!selectedCity.value || !selectedDistrict.value || !selectedNeighborhood.value || !created_at.value) {
+        if (!selectedCity.value?.name || !selectedDistrict.value || !selectedNeighborhood.value || !price.value || !m2_gross.value || !m2_net.value || !property_type.value || !title.value) {
             toast.add({ severity: 'error', summary: 'Hata', detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
             return;
         }
 
-        let imageUrl = image.value; 
+        let imageUrl = image.value;
 
         if (selectedFile.value) {
-            toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 1500 });
-            imageUrl = await uploadToCloudinary(selectedFile.value);
+            toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
+            
+            // imageUrl = await uploadToCloudinary(selectedFile.value);
+            response = await uploadToCloudinary(selectedFile.value);
+            if(!response || !response.secure_url){
+                toast.add({ severity: 'error', summary: 'Hata', detail: 'Resim yüklenirken hata oluştu.', life: 2000 });
+                return;
+            }
+            imageUrl = response.secure_url;
+            public_id = response.public_id;
+            toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Resim başarıyla yüklendi.', life: 2000 });
         }
         const date = new Date(created_at.value);
         const y = date.getFullYear()
@@ -533,12 +548,13 @@ const saveEstate = async () => {
             kaks: kaks.value || null,
             gabari: gabari.value || null,
             in_sale: in_sale.value || null,
-            img_url: imageUrl || null
+            img_url: imageUrl || null,
+            img_id: public_id || null
         };
         const { error } = await supabase
             .from("estates")
             .update({
-                created_at: payload.created_at, 
+                created_at: payload.created_at,
                 city: payload.city,
                 district: payload.district,
                 neighborhood: payload.neighborhood,
@@ -563,7 +579,6 @@ const saveEstate = async () => {
                 price: payload.price,
                 notes: payload.notes,
                 deed_status: payload.deed_status,
-                // img_id: payload.img_id,
                 property_type: payload.property_type,
                 title: payload.title,
                 rooms: payload.rooms,
@@ -573,7 +588,8 @@ const saveEstate = async () => {
                 kaks: payload.kaks,
                 gabari: payload.gabari,
                 in_sale: payload.in_sale,
-                img_url: payload.img_url
+                img_url: payload.img_url,
+                img_id: payload.img_id
             })
             .eq('id', props.id);
         if (error) {

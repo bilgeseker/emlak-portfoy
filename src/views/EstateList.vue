@@ -3,6 +3,50 @@
         <!-- <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Yönetimi</h1>
         </div> -->
+        <!-- İstatistik Kartları -->
+        <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div
+                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Toplam Konut</p>
+                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ totalEstates }}</p>
+                    </div>
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="pi pi-home text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Bu Ay Eklenen</p>
+                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ newThisMonth }}</p>
+                    </div>
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                        <i class="pi pi-plus-circle text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Aktif Filtreler</p>
+                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ activeFilterCount }}</p>
+                    </div>
+                    <div
+                        class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="pi pi-filter text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div> -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Yönetimi</h1>
 
@@ -81,7 +125,7 @@
                 </Column>
             </DataTable>
         </div>
-        <div
+        <!-- <div
             class="lg:hidden flex flex-col bg-slate-100 dark:bg-zinc-950 gap-[1px] border-y border-slate-200 dark:border-zinc-800">
             <div v-if="isPending" class="p-4 space-y-4">
                 <div v-for="i in 5" :key="i" class="flex gap-3 animate-pulse">
@@ -128,6 +172,55 @@
                 </div>
             </div>
 
+        </div> -->
+        <div class="lg:hidden bg-white rounded-xl dark:bg-zinc-900 shadow-sm  border border-slate-200 dark:border-zinc-900 overflow-hidden">
+            <Skeleton v-if="isPending" class="p-4" height="400px"></Skeleton>
+
+            <DataView v-else :value="filteredEstates" paginator :rows="8" class="bg-slate-100 dark:bg-zinc-950">
+                <template #list="slotProps">
+                    <div class="flex flex-col gap-[1px]">
+                        <div v-for="(item, index) in slotProps.items" :key="index"
+                            class="flex flex-col p-4 bg-white dark:bg-zinc-900 border-b border-slate-100 dark:border-zinc-800">
+
+                            <div class="flex gap-4">
+                                <div @click="router.push(`/estateDetails/${item.id}`)"
+                                    class="cursor-pointer flex-shrink-0">
+                                    <img :src="getOptimizedUrl(item.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                                        class="w-28 h-24 object-cover rounded-lg shadow-sm" />
+                                </div>
+
+                                <div class="flex-1 min-w-0">
+                                    <div @click="router.push(`/estateDetails/${item.id}`)" class="cursor-pointer">
+                                        <h3
+                                            class="text-[14px] font-bold text-slate-800 dark:text-zinc-100 line-clamp-1">
+                                            {{ item.title }}
+                                        </h3>
+                                        <div
+                                            class="flex items-center gap-1 mt-1 text-[12px] text-slate-500 dark:text-zinc-400">
+                                            <i class="pi pi-map-marker text-[10px]"></i>
+                                            <span>{{ item.city }} / {{ item.district }}</span>
+                                        </div>
+                                        <div class="mt-1">
+                                            <span
+                                                class="text-md font-black text-indigo-500 dark:text-purple-300 tracking-tight">
+                                                {{ formatCurrency(item.price) }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex justify-end gap-2 mt-3">
+                                        <Button icon="pi pi-pencil" severity="contrast" size="small" outlined
+                                            label="Düzenle" class="!text-xs !py-1"
+                                            @click.stop="onEditEstate(item.id)" />
+                                        <Button icon="pi pi-trash" severity="danger" size="small" outlined label="Sil"
+                                            class="!text-xs !py-1" @click.stop="confirmDelete(item.id)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </DataView>
         </div>
         <Drawer v-model:visible="visibleFilter" header="Filtreleme" position="left"
             class="!w-full md:!w-[400px] dark:bg-zinc-900">
@@ -147,6 +240,7 @@ import Column from 'primevue/column';
 import ConfirmDialog from 'primevue/confirmdialog';
 import Skeleton from 'primevue/skeleton';
 import Drawer from 'primevue/drawer';
+import DataView from 'primevue/dataview';
 // import FloatLabel from 'primevue/floatlabel';
 // import Select from 'primevue/select';
 // import InputText from 'primevue/inputtext';
@@ -176,7 +270,7 @@ const filters = ref(null);    //Drawer'a gidecek kopya filtre
 const appliedFilters = ref({
     city: null, district: null, neighborhood: null, minPrice: null, maxPrice: null, rooms: null, m2_grossmin: null, m2_grossmax: null,
     m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null,
-    in_site: null, zoning_status: null
+    in_site: null, zoning_status: null, kaks: null, gabari: null
 });  // Tabloyu filtreleyen asıl veri
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
@@ -219,12 +313,22 @@ const confirmDelete = (id) => {
         acceptClass: 'p-button-danger !text-white !bg-red-600',
         accept: async () => {
             try {
+                const target = estates.value.find(e => e.id === id);
+                console.log("Silinecek ilan:", target);
+                const publicId = target?.img_id;
+
+                console.log(publicId);
                 const { error } = await supabase
                     .from('estates')
                     .delete()
                     .eq('id', id);
 
                 if (error) throw error;
+                if (publicId) {
+                    await supabase.functions.invoke('cloudinary-delete', {
+                        body: { public_id: publicId }
+                    });
+                }
                 toast.add({
                     severity: 'success',
                     summary: 'Başarılı',
@@ -248,7 +352,7 @@ const confirmDelete = (id) => {
 
 const fetchEstates = async () => {
     try {
-        const { data, error } = await supabase.from("estates").select(`*`).order('created_at', { ascending: true });
+        const { data, error } = await supabase.from("estates").select(`*`).order('city', { ascending: true });
         if (error) {
             throw error;
         }
@@ -303,16 +407,24 @@ const filteredEstates = computed(() => {
         const matchesUsage = !appliedFilters.value.usage_status ||
             appliedFilters.value.usage_status.length === 0 ||
             appliedFilters.value.usage_status.includes(estate.usage_status);
-            
+
         const matchesInSite = !appliedFilters.value.in_site || estate.in_site === appliedFilters.value.in_site;
         // }
-        
+
         const matchesZoning = !appliedFilters.value.zoning_status ||
             appliedFilters.value.zoning_status.length === 0 ||
             appliedFilters.value.zoning_status.includes(estate.zoning_status);
+
+        const matchesKaks = !appliedFilters.value.kaks ||
+            appliedFilters.value.kaks.length === 0 ||
+            appliedFilters.value.kaks.includes(estate.kaks);
+        const matchesGabari = !appliedFilters.value.gabari ||
+            appliedFilters.value.gabari.length === 0 ||
+            appliedFilters.value.gabari.includes(estate.gabari);
         return matchesCity && matchesDistrict && matchesNeighborhood && matchesMinPrice && matchesMaxPrice && matchesRooms &&
             matchesMinM2Gross && matchesMaxM2Gross && matchesMinM2Net && matchesMaxM2Net && matchesInsale && matchesPropertyType &&
-            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony && matchesInSite && matchesZoning;
+            matchesHeating && matchesKitchen && matchesUsage && matchesDeed && matchesBalcony && matchesInSite && matchesZoning && matchesKaks &&
+            matchesGabari;
     });
 });
 
@@ -336,9 +448,33 @@ const getOptimizedUrl = (url) => {
     if (!url || !url.includes('cloudinary')) return url;
     return url.replace('/upload/', '/upload/w_150,c_thumb,q_auto,f_auto/');
 };
+
+// const totalEstates = computed(() => {
+//     return estates.value?.length || 0;
+// });
+
+// const newThisMonth = computed(() => {
+//     if (!estates.value) return 0;
+//     const now = new Date();
+//     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+//     return estates.value.filter(estate => {
+//         const createdDate = new Date(estate.created_at);
+//         return createdDate >= startOfMonth;
+//     }).length;
+// });
 </script>
 <style scoped>
 .p-paginator {
     border-radius: 0px;
+}
+
+:deep(.p-paginator) {
+    padding: 0.5rem;
+    justify-content: center;
+}
+
+:deep(.p-paginator-page), :deep(.p-paginator-next), :deep(.p-paginator-last), :deep(.p-paginator-first), :deep(.p-paginator-prev) {
+    min-width: 2.5rem;
+    height: 2.5rem;
 }
 </style>

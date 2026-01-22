@@ -257,7 +257,7 @@ const formatPrice = (value) => {
 };
 const getOptimizedUrl = (url) => {
     if (!url || !url.includes('cloudinary')) return url;
-    return url.replace('/upload/', '/upload/w_400,c_fill,q_auto,f_auto/');
+    return url.replace('/upload/', '/upload/w_800,c_fill,q_auto,f_auto/');
 };
 
 </script>

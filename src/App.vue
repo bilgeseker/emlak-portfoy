@@ -9,7 +9,7 @@
         v-if="route.name !== 'giris'">
         <!-- <ToggleButton v-model="isCollapsed" onLabel="" offLabel="" onIcon="pi pi-bars" offIcon="pi pi-bars" class="w-12 toggleButton mr-3" /> -->
         <Button icon="pi pi-bars" aria-label="Save" class="ml-0 mr-3 !bg-white dark:!bg-zinc-950 !text-slate-900 dark:!text-slate-100 !border-white dark:!border-zinc-950 hover:!bg-slate-50 dark:hover:!bg-zinc-700 " @click="isCollapsed = !isCollapsed"/>
-        <img :src="isDark ? logowhite : logo" class="w-40">
+        <!-- <img :src="isDark ? logowhite : logo" class="w-40"> -->
       </header>
 
       <div :class="['flex-1 overflow-y-auto' , route.name === 'giris' ? '' : 'p-2']">
@@ -17,8 +17,6 @@
         <VueQueryDevtools :initial-is-open="true" />
       </div>
     </main>
-
-    <Toast />
   </div>
 </template>
 
@@ -30,13 +28,13 @@ import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue'
 // import { ToggleButton } from 'primevue';
 import { Button } from 'primevue';
-import logo from '@/assets/logowoback.png'
-import logowhite from '@/assets/logowhitewoback.png'
+// import logo from '@/assets/logowoback.png'
+// import logowhite from '@/assets/logowhitewoback.png'
 // import { useDark } from '@vueuse/core';
 import { useTheme } from '@/composables/useTheme'
 
-const { isDark, initTheme } = useTheme()
-// const { initTheme } = useTheme()
+// const { isDark, initTheme } = useTheme()
+const { initTheme } = useTheme()
 const isCollapsed = ref(false)
 const route = useRoute();
 
