@@ -35,7 +35,6 @@ jobs:
           use_vue_cli: true
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
           publish: always
-          draft: false
         env:
           # GitHub Secrets'tan alıp build sürecine aktarıyoruz
           VUE_APP_SUPABASE_URL: ${{ secrets.VUE_APP_SUPABASE_URL }}
