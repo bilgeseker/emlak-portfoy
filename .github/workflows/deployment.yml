@@ -3,7 +3,7 @@ name: Build/release
 on:
   push:
     tags:
-      - "*.*.*"
+      - "v*.*.*"
 
 jobs:
   release:
@@ -33,7 +33,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           use_vue_cli: true
-          draft: false
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
         env:
           # GitHub Secrets'tan alıp build sürecine aktarıyoruz
           VUE_APP_SUPABASE_URL: ${{ secrets.VUE_APP_SUPABASE_URL }}
