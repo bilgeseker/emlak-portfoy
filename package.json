@@ -1,6 +1,6 @@
 {
   "name": "emlak-portfoy",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -72,7 +72,8 @@
             {
               "provider": "github",
               "owner": "bilgeseker",
-              "repo": "emlak-portfoy"
+              "repo": "emlak-portfoy",
+              "releaseType": "release"
             }
           ],
           "win": {
