@@ -12,7 +12,7 @@
             <div class="bg-white dark:bg-slate-900 p-8 lg:p-12 flex flex-col justify-center">
                 <div class="max-w-md mx-auto w-full">
                     <div class="flex items-center justify-center mb-8">
-                        <!-- <img :src="logo" alt="logo" class="w-80 h-auto" /> -->
+                        <img :src="logo" alt="logo" class="w-80 h-auto" />
                     </div>
 
                     <form @submit.prevent="handleSubmit" class="space-y-4">
@@ -55,7 +55,7 @@ import Button from 'primevue/button';
 import IconField from 'primevue/iconfield';
 import InputIcon from 'primevue/inputicon';
 import loginBackground from '@/assets/loginbackground.jpg';
-// import logo from '@/assets/logo.jpeg';
+import logo from '@/assets/logowoback.png';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { supabase } from '@/supabase';
