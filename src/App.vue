@@ -29,7 +29,7 @@ import { ref, onMounted } from 'vue'
 // import { ToggleButton } from 'primevue';
 import { Button } from 'primevue';
 import logo from '@/assets/logowoback.png'
-import logowhite from '@/assets/logowhitewoback.png'
+import logowhite from '@/assets/logowhitewobacknew.png'
 // import { useDark } from '@vueuse/core';
 import { useTheme } from '@/composables/useTheme'
 
