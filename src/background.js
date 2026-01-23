@@ -3,7 +3,15 @@
 import { app, protocol, BrowserWindow } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS3_DEVTOOLS } from 'electron-devtools-installer'
+import { autoUpdater } from "electron-updater"
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+function checkUpdates() {
+  // Geliştirme aşamasındayken güncellemeleri kontrol etmemesi için:
+  if (process.env.NODE_ENV === 'production') {
+    autoUpdater.checkForUpdatesAndNotify()
+  }
+}
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
@@ -50,10 +58,20 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
 
+autoUpdater.on('update-available', () => {
+  console.log('Güncelleme bulundu, indiriliyor...')
+})
+
+autoUpdater.on('update-downloaded', () => {
+  // Kullanıcıya sormadan hemen kurup yeniden başlatmasını istiyorsan:
+  autoUpdater.quitAndInstall()
+})
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  checkUpdates()
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {
