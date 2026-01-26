@@ -1,7 +1,7 @@
 <template>
     <Dialog :visible="props.modelValue" @update:visible="$emit('update:modelValue', $event)" modal header=" "
-        :style="{ width: '90vw', maxWidth: '600px' }" :breakpoints="{ '960px': '80vw', '641px': '100vw' }"
-        class="font-sans" :pt="{
+        :style="{ width: '90vw', maxWidth: '600px', margin: '0px 8px' }"
+        :breakpoints="{ '960px': '80vw', '641px': '100vw' }" class="font-sans" :pt="{
             root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 !rounded-2xl overflow-hidden',
             header: 'p-0',
             content: 'p-0 bg-white dark:bg-zinc-900',
@@ -52,10 +52,9 @@
                     <div class="space-y-1.5">
                         <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Telefon <span
                                 class="text-red-500">*</span></label>
-                        <InputNumber v-model="owner_phone"
+                        <InputMask v-model="owner_phone" mask="0599 999 99 99"
                             class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 focus:!border-indigo-500 dark:focus:!border-indigo-400 !shadow-none"
-                            :class="{ '!border-red-500': submitted && !owner_phone }"
-                            placeholder="Örn: 555 555 55 55" />
+                            :class="{ '!border-red-500': submitted && !owner_phone }" placeholder="05XX XXX XX XX" />
                     </div>
                 </div>
             </div>
@@ -102,6 +101,7 @@ import { ref, watch, onMounted, defineEmits, defineProps } from 'vue';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputText from 'primevue/inputtext';
+import InputMask from 'primevue/inputmask';
 import InputNumber from 'primevue/inputnumber';
 import Textarea from 'primevue/textarea';
 import { supabase } from '@/supabase';
@@ -113,13 +113,14 @@ const props = defineProps({
     id: Number
 });
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'saved']);
 
 const toast = useToast();
 const queryClient = useQueryClient();
 
-const name = ref('');
-const surname = ref('');
+const owner_name = ref('');
+const owner_surname = ref('');
+const owner_phone = ref('');
 const commission_rate = ref(null);
 const notes = ref('');
 const submitted = ref(false);
@@ -131,8 +132,9 @@ const closeDialog = () => {
 };
 
 const resetForm = () => {
-    name.value = '';
-    surname.value = '';
+    owner_name.value = '';
+    owner_surname.value = '';
+    owner_phone.value = '';
     commission_rate.value = null;
     notes.value = '';
     submitted.value = false;
@@ -148,10 +150,11 @@ const fetchOwner = async (id) => {
 
         if (error) throw error;
 
-        name.value = data.name || '';
-        surname.value = data.surname || '';
+        owner_name.value = data.owner_name || '';
+        owner_surname.value = data.owner_surname || '';
+        owner_phone.value = data.owner_phone || '';
         commission_rate.value = data.commission_rate || null;
-        notes.value = data.notes || '';
+        notes.value = data.owner_notes || '';
     } catch (error) {
         console.error('Ev sahibi getirilirken hata:', error);
         toast.add({
@@ -166,7 +169,7 @@ const fetchOwner = async (id) => {
 const saveOwner = async () => {
     submitted.value = true;
 
-    if (!name.value || !surname.value) {
+    if (!owner_name.value || !owner_surname.value) {
         toast.add({
             severity: 'warn',
             summary: 'Uyarı',
@@ -180,10 +183,11 @@ const saveOwner = async () => {
 
     try {
         const ownerData = {
-            name: name.value,
-            surname: surname.value,
+            owner_name: owner_name.value,
+            owner_surname: owner_surname.value,
+            owner_phone: owner_phone.value,
             commission_rate: commission_rate.value,
-            notes: notes.value
+            owner_notes: notes.value
         };
 
         if (props.id) {
@@ -203,11 +207,16 @@ const saveOwner = async () => {
             });
         } else {
             // Yeni ekleme
-            const { error } = await supabase
+            const { data, error } = await supabase
                 .from('owners')
-                .insert([ownerData]);
+                .insert([ownerData])
+                .select();
 
             if (error) throw error;
+
+            if (data && data[0]) {
+                emit('saved', data[0].id);
+            }
 
             toast.add({
                 severity: 'success',

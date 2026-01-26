@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col h-full overflow-hidden">
+    <div class="flex flex-col h-full overflow-hidden px-3">
 
         <div class="flex-1 overflow-y-auto p-1 pb-5 space-y-6 pt-4 custom-scrollbar">
             <div class="flex flex-col gap-2">
@@ -119,7 +119,8 @@
                         <Select showClear display="chip" fluid inputId="status_label" :options="booleans2"
                             optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                             v-model="filters.in_site" />
-                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Site İçerisinde</label>
+                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Site
+                            İçerisinde</label>
                     </FloatLabel>
                 </div>
             </template>
@@ -138,7 +139,8 @@
                         <MultiSelect showClear display="chip" fluid inputId="status_label" :options="kaksSecenekleri"
                             optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                             v-model="filters.kaks" />
-                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Kaks (Emsal)</label>
+                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Kaks
+                            (Emsal)</label>
                     </FloatLabel>
                 </div>
                 <div class="flex flex-col gap-2">
@@ -146,7 +148,8 @@
                         <MultiSelect showClear display="chip" fluid inputId="status_label" :options="gabariSecenekleri"
                             optionLabel="label" optionValue="value" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
                             v-model="filters.gabari" />
-                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200" for="status_label">Gabari</label>
+                        <label class="text-xs font-bold text-slate-600 dark:!text-zinc-200"
+                            for="status_label">Gabari</label>
                     </FloatLabel>
                 </div>
             </template>

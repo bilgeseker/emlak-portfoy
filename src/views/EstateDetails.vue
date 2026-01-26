@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!isPending" class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8">
+    <div v-if="!isPending && selectedEstate" class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8">
         <div class="max-w-6xl mx-auto mb-6 flex justify-between items-center">
             <button @click="$router.back()"
                 class="flex items-center gap-2 text-slate-600 dark:text-zinc-400 hover:text-green-600 transition-colors">
@@ -72,6 +72,12 @@
                             <span class="text-slate-400">İlan No</span>
                             <span class="font-medium dark:text-zinc-300">#{{ selectedEstate.id }}</span>
                         </div> -->
+                        <div class="flex justify-between text-sm cursor-pointer" @click="showOwnerModal">
+                            <span class="text-slate-400">Ev Sahibi</span>
+                            <span class="font-medium dark:text-zinc-300">{{ selectedEstate.owners?.owner_name || '-' }}
+                                {{
+                                    selectedEstate.owners?.owner_surname || '' }}</span>
+                        </div>
                         <div class="flex justify-between text-sm">
                             <span class="text-slate-400">İlan Tarihi</span>
                             <span class="font-medium dark:text-zinc-300">{{ new
@@ -205,19 +211,109 @@
             </div>
         </div>
     </div>
-    <div v-else class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 animate-pulse">
+    <div v-else-if="isPending" class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 animate-pulse">
         <EstateDetailSkeleton />
     </div>
+    <div v-else class="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-zinc-950 text-slate-500">
+        <div class="text-center">
+            <i class="pi pi-exclamation-circle text-4xl mb-2"></i>
+            <p>İlan bulunamadı veya silinmiş.</p>
+            <Button label="Listeye Dön" text @click="$router.back()" class="mt-2" />
+        </div>
+    </div>
+
+    <Dialog v-if="selectedEstate && selectedEstate.owners" v-model:visible="ownerModal" modal header=" "
+        :style="{ width: '90vw', maxWidth: '500px', margin: '0px 8px' }"
+        :breakpoints="{ '960px': '80vw', '641px': '100vw' }" class="font-sans" :pt="{
+            root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 !rounded-2xl overflow-hidden',
+            header: 'p-0',
+            content: 'p-0 bg-white dark:bg-zinc-900',
+            footer: 'p-5 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800'
+        }">
+        <!-- Custom Header -->
+        <div
+            class="px-6 py-5 border-b border-slate-100 dark:border-zinc-800 flex justify-between items-center bg-white dark:bg-zinc-900">
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Ev Sahibi Detayları</h3>
+                <p class="text-slate-500 dark:text-zinc-400 text-sm mt-0.5">Mülk sahibi iletişim ve iş bilgileri.</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-zinc-800 flex items-center justify-center">
+                <i class="pi pi-user text-slate-400 dark:text-zinc-500 text-lg"></i>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <!-- Personal Info -->
+            <div class="space-y-4">
+                <h4
+                    class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="pi pi-id-card text-indigo-500"></i> İletişim
+                </h4>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="p-3 bg-slate-50 dark:bg-zinc-800/50 rounded-xl space-y-1">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Ad Soyad</span>
+                        <div class="text-slate-900 dark:text-white font-medium text-lg">
+                            {{ selectedEstate.owners.owner_name }} {{ selectedEstate.owners.owner_surname }}
+                        </div>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-zinc-800/50 rounded-xl space-y-1">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Telefon</span>
+                        <div class="text-slate-900 dark:text-white font-medium flex items-center gap-2">
+                            <i class="pi pi-phone text-green-500"></i>
+                            <a :href="`tel:${selectedEstate.owners.owner_phone}`"
+                                class="hover:text-green-600 hover:underline transition-colors">
+                                {{ selectedEstate.owners.owner_phone || '-' }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-px bg-slate-100 dark:bg-zinc-800 w-full"></div>
+
+            <!-- Business Info -->
+            <div class="space-y-4">
+                <h4
+                    class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="pi pi-briefcase text-indigo-500"></i> Detaylar
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-3 bg-slate-50 dark:bg-zinc-800/50 rounded-xl space-y-1">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Komisyon</span>
+                        <div class="text-slate-900 dark:text-white font-medium">
+                            %{{ selectedEstate.owners.commission_rate || '0' }}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-3 bg-slate-50 dark:bg-zinc-800/50 rounded-xl space-y-1">
+                    <span class="text-xs font-semibold text-slate-400 uppercase">Notlar</span>
+                    <div class="text-slate-700 dark:text-zinc-300 text-sm whitespace-pre-wrap">
+                        {{ selectedEstate.owners.owner_notes || '-' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <template #footer>
+            <div class="flex justify-end w-full">
+                <Button label="Kapat" icon="pi pi-times" severity="secondary" @click="ownerModal = false"
+                    class="!px-6 !py-2 !rounded-lg" />
+            </div>
+        </template>
+    </Dialog>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { supabase } from '@/supabase';
 import { useQuery } from '@tanstack/vue-query'
+import Dialog from 'primevue/dialog';
+import Button from 'primevue/button';
 import { heatingOptions, roomTypeOptions, kitchenTypes, booleans, parkingTypes, propertyTypes, booleans2, usageTypes, deedStatus, zoningStatusTypes } from '../constants/constants.js';
 import EstateDetailSkeleton from '@/components/EstateDetailSkeleton.vue';
 const route = useRoute();
+const ownerModal = ref(false);
 
 const estateId = computed(() => route.params.id);
 
@@ -233,12 +329,19 @@ const fetchEstate = async () => {
 
     const { data, error } = await supabase
         .from("estates")
-        .select(`*`)
+        .select(`*,
+        owners!left (
+            owner_name,
+            owner_surname,
+            owner_phone,
+            commission_rate,
+            owner_notes
+        )`)
         .eq('id', id)
-        .single();
+        .single(); // Ensure this is single()
 
     if (error) {
-        console.error("Supabase Error:", error.message);
+        console.error("Supabase Error Details:", error);
         throw error;
     }
     return data;
@@ -258,6 +361,10 @@ const formatPrice = (value) => {
 const getOptimizedUrl = (url) => {
     if (!url || !url.includes('cloudinary')) return url;
     return url.replace('/upload/', '/upload/w_800,c_fill,q_auto,f_auto/');
+};
+
+const showOwnerModal = () => {
+    ownerModal.value = true;
 };
 
 </script>

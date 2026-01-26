@@ -74,6 +74,18 @@
                             </template>
                         </Column>
 
+                        <Column field="owner_phone" header="Telefon" sortable style="min-width: 200px">
+                            <template #body="{ data }">
+                                <div class="flex items-center gap-4 py-3">
+                                    <div>
+                                        <div class="font-semibold text-slate-900 dark:text-white text-sm">
+                                            {{ data.owner_phone }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </Column>
+
                         <Column field="commission_rate" header="Komisyon" sortable style="min-width: 150px">
                             <template #body="{ data }">
                                 <span
@@ -83,7 +95,7 @@
                             </template>
                         </Column>
 
-                        <Column field="notes" header="Not">
+                        <Column field="notes" header="Not" style="min-width: 250px">
                             <template #body="{ data }">
                                 <div class="max-w-xs">
                                     <p class="text-sm text-slate-600 dark:text-zinc-400 truncate"

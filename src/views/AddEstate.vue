@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
-        <div class="max-w-5xl mx-auto space-y-6">
+        <div class="max-w-7xl mx-auto space-y-6">
             <!-- Professional Header Section -->
             <div
                 class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">
@@ -31,6 +31,20 @@
                         </div>
 
                         <div class="space-y-4">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Mülk Sahibi
+                                    <span class="text-red-500">*</span></label>
+                                <div class="flex gap-2">
+                                    <Select v-model="selectedOwner" :options="ownerOptions" optionLabel="label"
+                                        optionValue="value" filter placeholder="Mülk Sahibi Seçiniz"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 flex-1"
+                                        :class="{ '!border-red-500': submitted && !selectedOwner }" />
+                                    <Button icon="pi pi-plus" severity="secondary" outlined @click="openNewOwnerDialog"
+                                        v-tooltip.top="'Yeni Müşteri Ekle'"
+                                        class="!border-slate-300 dark:!border-zinc-700 !text-slate-600 dark:!text-zinc-400 !bg-slate-50 dark:!bg-zinc-800" />
+                                </div>
+                            </div>
+
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İlan Başlığı
                                     <span class="text-red-500">*</span></label>
@@ -351,6 +365,7 @@
 
         </div>
     </div>
+    <EditOwner v-model="showOwnerModal" @saved="handleOwnerSaved" />
     <Toast position="bottom-center" />
 </template>
 
@@ -368,8 +383,9 @@ import { ref, computed } from 'vue';
 // import allData from '../constants/cities_data.js';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { supabase } from '@/supabase';
-import Toast from 'primevue/toast';
+import { useQuery } from '@tanstack/vue-query';
 import { useToast } from 'primevue/usetoast';
+import EditOwner from '@/components/EditOwner.vue';
 import {
     heatingOptions, roomTypeOptions, propertyTypes, kitchenTypes, booleans, parkingTypes, booleans2,
     usageTypes, zoningStatusTypes, deedStatus, inSale, kaksSecenekleri, gabariSecenekleri
@@ -415,6 +431,39 @@ const in_sale = ref(null);
 const queryClient = useQueryClient();
 const toast = useToast();
 const submitted = ref(false);
+const showOwnerModal = ref(false);
+const selectedOwner = ref(null);
+
+const fetchOwners = async () => {
+    const { data, error } = await supabase
+        .from('owners')
+        .select('*')
+        .order('owner_name', { ascending: true });
+    if (error) throw error;
+    return data;
+};
+
+const { data: owners, refetch: refetchOwners } = useQuery({
+    queryKey: ['owners'],
+    queryFn: fetchOwners
+});
+
+const ownerOptions = computed(() => {
+    return owners.value?.map(o => ({
+        label: `${o.owner_name} ${o.owner_surname}`,
+        value: o.id
+    })) || [];
+});
+
+const openNewOwnerDialog = () => {
+    showOwnerModal.value = true;
+};
+
+const handleOwnerSaved = (newId) => {
+    refetchOwners().then(() => {
+        selectedOwner.value = newId;
+    });
+};
 
 const selectedFile = ref(null); // Ham dosya objesini tutmak için
 
@@ -503,7 +552,7 @@ const saveEstate = async () => {
     let public_id = null;
     try {
         submitted.value = true;
-        if (!selectedCity.value?.name || !selectedDistrict.value || !selectedNeighborhood.value || !price.value || !m2_gross.value || !m2_net.value || !property_type.value || !title.value) {
+        if (!selectedOwner.value || !selectedCity.value?.name || !selectedDistrict.value || !selectedNeighborhood.value || !price.value || !m2_gross.value || !m2_net.value || !property_type.value || !title.value) {
             toast.add({ severity: 'error', summary: 'Hata', detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
             return;
         }
@@ -531,6 +580,7 @@ const saveEstate = async () => {
         const finalDate = `${y}-${m}-${d}`;
 
         const payload = {
+            owner_id: selectedOwner.value,
             created_at: finalDate,
             city: selectedCity.value.name,
             district: selectedDistrict.value,
@@ -578,6 +628,7 @@ const mutation = useMutation({
     mutationFn: async (payload) => {
         const { error } = await supabase.from("estates").insert([
             {
+                owner_id: payload.owner_id,
                 created_at: payload.created_at,
                 city: payload.city,
                 district: payload.district,
@@ -634,6 +685,7 @@ const mutation = useMutation({
 });
 const resetForm = () => {
     // String ve Number alanlar
+    selectedOwner.value = null;
     title.value = null;
     m2_gross.value = null;
     m2_net.value = null;
