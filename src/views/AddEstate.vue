@@ -1,269 +1,357 @@
 <template>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-5 md:gap-6 ">
-        <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Ekle</h1>
-        </div>
-        <div class="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Başlığı<span
-                    class="font-bold text-red-500"> *</span></label>
-            <InputText v-model="title" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2"
-                :class="{ 'p-invalid !border-red-500': submitted && !title }" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Emlak Tipi<span
-                    class="font-bold text-red-500"> *</span></label>
-            <Select :options="propertyTypes" filter optionLabel="label" optionValue="value"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="property_type"
-                :class="{ 'p-invalid !border-red-500': submitted && !property_type }" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İl<span
-                    class="font-bold text-red-500"> *</span></label>
-            <Select v-model="selectedCity" :options="allCities" optionLabel="name" filter placeholder="İl Seçiniz"
-                :class="{ 'p-invalid !border-red-500': submitted && !selectedCity }" @change="onCityChange">
-            </Select>
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlçe<span
-                    class="font-bold text-red-500"> *</span></label>
-            <Select v-model="selectedDistrict" :options="districtList" filter :disabled="!selectedCity"
-                :class="{ 'p-invalid !border-red-500': submitted && !selectedDistrict }" placeholder="İlçe Seçiniz"
-                :virtualScrollerOptions="{ itemSize: 38 }" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mahalle<span
-                    class="font-bold text-red-500"> *</span></label>
-            <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Select v-model="selectedNeighborhood" :options="neighborhoodList" filter :disabled="!selectedDistrict"
-                :class="{ 'p-invalid !border-red-500': submitted && !selectedNeighborhood }"
-                placeholder="Mahalle Seçiniz" :virtualScrollerOptions="{ itemSize: 38 }"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Brüt)<span
-                    class="font-bold text-red-500"> *</span></label>
-            <InputNumber v-model="m2_gross" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                :invalid="submitted && !m2_gross" inputClass="p-3 md:p-2 w-full" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">m² (Net)<span
-                    class="font-bold text-red-500"> *</span></label>
-            <InputNumber v-model="m2_net" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                :invalid="submitted && !m2_net" inputClass="p-3 md:p-2 w-full" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Tür</label>
-            <Select :options="inSale" optionLabel="label" optionValue="value"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="in_sale" />
-        </div>
-        <template v-if="property_type !== 'arsa'">
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Oda Sayısı</label>
-                <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-                <Select v-model="selectedRoom" :options="roomTypeOptions" filter optionLabel="label" optionValue="value"
-                    :virtualScrollerOptions="{ itemSize: 38 }" class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bulunduğu Kat</label>
-                <InputNumber v-model="floor_located" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kat Sayısı</label>
-                <InputNumber v-model="num_of_floors" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Bina Yaşı</label>
-                <InputNumber v-model="building_age" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Isıtma</label>
-                <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-                <Select v-model="heating" :options="heatingOptions" optionLabel="label" optionValue="value"
-                    placeholder="Isıtma Tipi Seçiniz" filter class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Banyo Sayısı</label>
-                <InputNumber v-model="num_of_bath" class="w-full dark:bg-zinc-800 dark:border-zinc-700"
-                    inputClass="p-3 md:p-2 w-full" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Mutfak</label>
-                <Select :options="kitchenTypes" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="kitchen" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Balkon</label>
-                <Select :options="booleans" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="balcony" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Asansör</label>
-                <Select :options="booleans" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="lift" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Otopark</label>
-                <Select :options="parkingTypes" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="parking" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Eşyalı</label>
-                <Select :options="booleans2" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="furnished" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site İçerisinde</label>
-                <Select v-model="isInSite" :options="booleans2" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Site Adı</label>
-                <InputText :disabled="!isInSite" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2"
-                    v-model="site_name" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kullanım Durumu</label>
-                <Select :options="usageTypes" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="usage_status" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Aidat (TL)</label>
-                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                    v-model="member_fee" />
-            </div>
-        </template>
-        <template v-if="property_type === 'arsa'">
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İmar Durumu</label>
-                <Select :options="zoningStatusTypes" filter optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="zoning_status" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Parsel No</label>
-                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                    v-model="parsel_no" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Pafta No</label>
-                <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                    v-model="pafta_no" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Kaks (Emsal)</label>
-                <!-- <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                    v-model="kaks" /> -->
-                <Select v-model="kaks" :options="kaksSecenekleri" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-            </div>
-            <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Gabari</label>
-                <!-- <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" inputClass="p-3 md:p-2 w-full"
-                    v-model="gabari" /> -->
-                <Select v-model="gabari" :options="gabariSecenekleri" optionLabel="label" optionValue="value"
-                    class="w-full dark:bg-zinc-800 dark:border-zinc-700" />
-            </div>
-        </template>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Takas</label>
-            <Select :options="booleans2" optionLabel="label" optionValue="value"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="swap" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Tapu Durumu</label>
-            <Select :options="deedStatus" filter optionLabel="label" optionValue="value"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="deed_status" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Krediye Uygun</label>
-            <Select :options="booleans2" optionLabel="label" optionValue="value"
-                class="w-full dark:bg-zinc-800 dark:border-zinc-700" v-model="credit" />
-        </div>
-
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
-            <DatePicker required="true" v-model="created_at" showIcon fluid iconDisplay="input" dateFormat="dd/mm/yy" />
-        </div>
-
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Fiyat (TL)<span
-                    class="font-bold text-red-500"> *</span></label>
-            <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY"
-                :invalid="submitted && !price" locale="tr-TR"
-                inputClass="p-3 md:p-2 w-full" v-model="price" />
-        </div>
-
-        <!-- <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Resim</label>
-            <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
-                class="p-button-outlined" />
-            <img v-if="image" :src="image" alt="Image" class="shadow-md rounded-xl w-full sm:w-64" />
-        </div> -->
-        <div class="flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Resim</label>
-
-            <div class="flex flex-col sm:flex-row items-start gap-4">
-
-                <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
-                    class="p-button-outlined" chooseLabel="Dosya Seç" />
-
-                <div v-if="image" class="relative group">
-                    <img :src="image" alt="Önizleme"
-                        class="shadow-lg rounded-xl w-full sm:w-80 h-52 object-contain border-2 border-dashed border-slate-200 dark:border-zinc-700 p-1" />
-                    <button @click="clearImage"
-                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-md hover:bg-red-600 transition-colors">
-                        <i class="pi pi-times text-xs"></i>
-                    </button>
-                </div>
-
-                <div v-else
-                    class="w-full sm:w-80 h-52 bg-slate-100 dark:bg-zinc-800 rounded-xl flex flex-col items-center justify-center text-slate-400 border-2 border-dashed border-slate-200 dark:border-zinc-700">
-                    <i class="pi pi-image text-2xl mb-1"></i>
-                    <span class="text-[10px]">Önizleme Yok</span>
+    <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
+        <div class="max-w-5xl mx-auto space-y-6">
+            <!-- Professional Header Section -->
+            <div
+                class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                İlan Ekle
+                            </h1>
+                        </div>
+                        <p class="text-slate-500 dark:text-zinc-400 text-sm">
+                            Yeni bir emlak ilanı oluşturun ve portföyünüze ekleyin.
+                        </p>
+                    </div>
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Form Column -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Basic Info Section -->
+                    <div
+                        class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 space-y-5">
+                        <div class="border-b border-slate-100 dark:border-zinc-800 pb-3 mb-2">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="pi pi-info-circle text-indigo-500"></i> Temel Bilgiler
+                            </h2>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İlan Başlığı
+                                    <span class="text-red-500">*</span></label>
+                                <InputText v-model="title" placeholder="Örn: Deniz Manzaralı Lüks Daire"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 focus:!border-indigo-500 dark:focus:!border-indigo-400 !shadow-none"
+                                    :class="{ '!border-red-500': submitted && !title }" />
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Emlak Tipi
+                                        <span class="text-red-500">*</span></label>
+                                    <Select v-model="property_type" :options="propertyTypes" optionLabel="label"
+                                        optionValue="value" placeholder="Seçiniz"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                        :class="{ '!border-red-500': submitted && !property_type }" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İlan
+                                        Tarihi</label>
+                                    <DatePicker v-model="created_at" dateFormat="dd/mm/yy" showIcon iconDisplay="input"
+                                        class="w-full"
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İşlem
+                                        Türü</label>
+                                    <Select v-model="in_sale" :options="inSale" optionLabel="label" optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Kullanım
+                                        Durumu</label>
+                                    <Select v-model="usage_status" :options="usageTypes" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Notlar</label>
+                                <Textarea v-model="notes" autoResize rows="4"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 !shadow-none"
+                                    placeholder="İlan hakkında detaylı açıklama..." />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Location Section -->
+                    <div
+                        class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 space-y-5">
+                        <div class="border-b border-slate-100 dark:border-zinc-800 pb-3 mb-2">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="pi pi-map-marker text-indigo-500"></i> Konum Bilgileri
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İl <span
+                                        class="text-red-500">*</span></label>
+                                <Select v-model="selectedCity" :options="allCities" optionLabel="name" filter
+                                    placeholder="İl Seçiniz"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                    :class="{ '!border-red-500': submitted && !selectedCity }" @change="onCityChange" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İlçe <span
+                                        class="text-red-500">*</span></label>
+                                <Select v-model="selectedDistrict" :options="districtList" filter
+                                    :disabled="!selectedCity" placeholder="İlçe Seçiniz"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                    :class="{ '!border-red-500': submitted && !selectedDistrict }"
+                                    :virtualScrollerOptions="{ itemSize: 38 }" />
+                            </div>
+                            <div class="space-y-1.5 md:col-span-2">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Mahalle <span
+                                        class="text-red-500">*</span></label>
+                                <Select v-model="selectedNeighborhood" :options="neighborhoodList" filter
+                                    :disabled="!selectedDistrict" placeholder="Mahalle Seçiniz"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                    :class="{ '!border-red-500': submitted && !selectedNeighborhood }"
+                                    :virtualScrollerOptions="{ itemSize: 38 }" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Features Section -->
+                    <div
+                        class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 space-y-5">
+                        <div class="border-b border-slate-100 dark:border-zinc-800 pb-3 mb-2">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="pi pi-list text-indigo-500"></i> Özellikler
+                            </h2>
+                        </div>
+
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Brüt m² <span
+                                        class="text-red-500">*</span></label>
+                                <InputNumber v-model="m2_gross" class="w-full"
+                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full"
+                                    :invalid="submitted && !m2_gross" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Net m² <span
+                                        class="text-red-500">*</span></label>
+                                <InputNumber v-model="m2_net" class="w-full"
+                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full"
+                                    :invalid="submitted && !m2_net" />
+                            </div>
+
+                            <!-- Conditionally Rendered Fields based on type -->
+                            <template v-if="property_type !== 'arsa'">
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Oda
+                                        Sayısı</label>
+                                    <Select v-model="selectedRoom" :options="roomTypeOptions" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Bulunduğu
+                                        Kat</label>
+                                    <InputNumber v-model="floor_located" class="w-full"
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Bina
+                                        Yaşı</label>
+                                    <InputNumber v-model="building_age" class="w-full"
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Isıtma</label>
+                                    <Select v-model="heating" :options="heatingOptions" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Banyo
+                                        Sayısı</label>
+                                    <InputNumber v-model="num_of_bath" class="w-full"
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Mutfak</label>
+                                    <Select v-model="kitchen" :options="kitchenTypes" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Balkon</label>
+                                    <Select v-model="balcony" :options="booleans" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Asansör</label>
+                                    <Select v-model="lift" :options="booleans" optionLabel="label" optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Otopark</label>
+                                    <Select v-model="parking" :options="parkingTypes" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Eşyalı</label>
+                                    <Select v-model="furnished" :options="booleans2" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Site
+                                        İçerisinde</label>
+                                    <Select v-model="isInSite" :options="booleans2" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Site
+                                        Adı</label>
+                                    <InputText :disabled="!isInSite" v-model="site_name"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                        :class="{ 'opacity-50 cursor-not-allowed': !isInSite }" />
+                                </div>
+                            </template>
+
+                            <template v-if="property_type === 'arsa'">
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İmar
+                                        Durumu</label>
+                                    <Select v-model="zoning_status" :options="zoningStatusTypes" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Ada/Parsel</label>
+                                    <InputNumber v-model="parsel_no" placeholder="Parsel" class="w-full"
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Kaks
+                                        (Emsal)</label>
+                                    <Select v-model="kaks" :options="kaksSecenekleri" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Gabari</label>
+                                    <Select v-model="gabari" :options="gabariSecenekleri" optionLabel="label"
+                                        optionValue="value"
+                                        class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                                </div>
+                            </template>
+
+                            <!-- Common Features for All Types -->
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Tapu
+                                    Durumu</label>
+                                <Select :options="deedStatus" filter optionLabel="label" optionValue="value"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
+                                    v-model="deed_status" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar / Secondary Column -->
+                <div class="space-y-6">
+                    <!-- Price Section -->
+                    <div
+                        class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 space-y-5">
+                        <div class="border-b border-slate-100 dark:border-zinc-800 pb-3 mb-2">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="pi pi-tag text-indigo-500"></i> Fiyatlandırma
+                            </h2>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Fiyat (TL) <span
+                                        class="text-red-500">*</span></label>
+                                <InputNumber v-model="price" mode="currency" currency="TRY" locale="tr-TR"
+                                    class="w-full"
+                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full text-lg font-bold text-indigo-600"
+                                    :invalid="submitted && !price" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Aidat</label>
+                                <InputNumber v-model="member_fee" mode="currency" currency="TRY" locale="tr-TR"
+                                    class="w-full"
+                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Krediye
+                                    Uygun</label>
+                                <Select v-model="credit" :options="booleans2" optionLabel="label" optionValue="value"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Takas</label>
+                                <Select v-model="swap" :options="booleans2" optionLabel="label" optionValue="value"
+                                    class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Section -->
+                    <div
+                        class="bg-white dark:bg-zinc-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-zinc-800 space-y-5">
+                        <div class="border-b border-slate-100 dark:border-zinc-800 pb-3 mb-2">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                <i class="pi pi-image text-indigo-500"></i> Görsel
+                            </h2>
+                        </div>
+
+                        <div class="flex flex-col gap-4">
+                            <div v-if="image"
+                                class="relative group rounded-xl overflow-hidden border border-slate-200 dark:border-zinc-700">
+                                <img :src="image" class="w-full h-48 object-cover" />
+                                <div
+                                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <Button icon="pi pi-trash" rounded severity="danger" @click="clearImage" />
+                                </div>
+                            </div>
+
+                            <div v-else
+                                class="border-2 border-dashed border-slate-300 dark:border-zinc-700 rounded-xl p-8 flex flex-col items-center justify-center text-slate-400 bg-slate-50 dark:bg-zinc-800/50">
+                                <i class="pi pi-image text-3xl mb-2"></i>
+                                <span class="text-xs text-center">Görsel seçilmedi</span>
+                            </div>
+
+                            <FileUpload mode="basic" @select="onFileSelect" customUpload auto severity="secondary"
+                                chooseLabel="Dosya Seç" class="w-full" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-zinc-800">
+                <Button label="İptal" @click="cancelEstate" icon="pi pi-times" text severity="secondary"
+                    class="w-full md:w-auto" />
+                <Button label="Kaydet" @click="saveEstate" icon="pi pi-check" severity="contrast"
+                    class="w-full md:w-auto px-8" />
+            </div>
+
         </div>
-        <div class="col-span-1 md:col-span-2 flex flex-col gap-2">
-            <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Notlar</label>
-            <!-- <InputText class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2" /> -->
-            <Textarea autoResize rows="5" cols="30" class="w-full dark:bg-zinc-800 dark:border-zinc-700 p-3 md:p-2"
-                v-model="notes" />
-        </div>
-    </div>
-    <div class="flex gap-2 w-full mt-5 md:w-auto justify-end">
-        <Button label="İptal" icon="pi pi-times" text severity="secondary"
-            class="flex-1 md:flex-none mr-5 hover:!bg-slate-100" />
-        <Button label="Kaydet" @click="saveEstate" icon="pi pi-check" severity="success" raised
-            class="flex-1 md:flex-none" />
     </div>
     <Toast position="bottom-center" />
-
 </template>
 
 <script setup>
@@ -385,33 +473,33 @@ const neighborhoodList = computed(() => {
 });
 
 // Cloudinary Bilgileriniz
-const cloudName = "cozumemlak";
-const uploadPreset = "ml_default"; // Panelde oluşturduğunuz isim
+// const cloudName = "cozumemlak";
+// const uploadPreset = "ml_default"; // Panelde oluşturduğunuz isim
 
-const uploadToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
+// const uploadToCloudinary = async (file) => {
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     formData.append("upload_preset", uploadPreset);
 
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error.message);
-    }
+//     const response = await fetch(
+//         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+//         {
+//             method: "POST",
+//             body: formData,
+//         }
+//     );
+//     if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.error.message);
+//     }
 
-    const data = await response.json();
-    // return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
-    return data; // Tüm yanıt verisi
-};
+//     const data = await response.json();
+//     // return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
+//     return data; // Tüm yanıt verisi
+// };
 
 const saveEstate = async () => {
-    let response = null;
+    // let response = null;
     let public_id = null;
     try {
         submitted.value = true;
@@ -422,19 +510,19 @@ const saveEstate = async () => {
         let imageUrl = image.value; // Varsayılan mevcut resim (belki edit yapıyorsunuzdur)
 
         // Eğer yeni bir dosya seçilmişse yükle
-        if (selectedFile.value) {
-            toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
-            
-            // imageUrl = await uploadToCloudinary(selectedFile.value);
-            response = await uploadToCloudinary(selectedFile.value);
-            if(!response || !response.secure_url){
-                toast.add({ severity: 'error', summary: 'Hata', detail: 'Resim yüklenirken hata oluştu.', life: 2000 });
-                return;
-            }
-            imageUrl = response.secure_url;
-            public_id = response.public_id;
-            toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Resim başarıyla yüklendi.', life: 2000 });
-        }
+        // if (selectedFile.value) {
+        //     toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
+
+        //     // imageUrl = await uploadToCloudinary(selectedFile.value);
+        //     response = await uploadToCloudinary(selectedFile.value);
+        //     if(!response || !response.secure_url){
+        //         toast.add({ severity: 'error', summary: 'Hata', detail: 'Resim yüklenirken hata oluştu.', life: 2000 });
+        //         return;
+        //     }
+        //     imageUrl = response.secure_url;
+        //     public_id = response.public_id;
+        //     toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Resim başarıyla yüklendi.', life: 2000 });
+        // }
         const date = new Date(created_at.value);
         const y = date.getFullYear()
         const m = String(date.getMonth() + 1).padStart(2, "0")
@@ -574,8 +662,20 @@ const resetForm = () => {
     swap.value = null;
     deed_status.value = null;
     credit.value = null;
-
+    selectedRoom.value = null;
+    zoning_status.value = null;
+    parsel_no.value = null;
+    pafta_no.value = null;
+    kaks.value = null;
+    gabari.value = null;
+    in_sale.value = null;
     // Default değerler
     isInSite.value = null;
+};
+const cancelEstate = () => {
+    resetForm();
+    clearImage();
+    submitted.value = false;
+    selectedFile.value = null;
 };
 </script>

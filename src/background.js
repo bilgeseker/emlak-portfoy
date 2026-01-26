@@ -8,6 +8,7 @@ const isDevelopment = process.env.NODE_ENV !== 'production'
 
 function checkUpdates() {
   // Geliştirme aşamasındayken güncellemeleri kontrol etmemesi için:
+  console.log(isDevelopment)
   if (process.env.NODE_ENV === 'production') {
     autoUpdater.checkForUpdatesAndNotify()
   }

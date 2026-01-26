@@ -211,7 +211,7 @@
 
             <div class="flex flex-col gap-2">
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">İlan Tarihi</label>
-                <DatePicker required="true" v-model="created_at" showIcon fluid iconDisplay="input"
+                <DatePicker :required="true" v-model="created_at" showIcon fluid iconDisplay="input"
                     dateFormat="dd/mm/yy" :class="{ 'p-invalid !border-red-500': submitted && !created_at }" />
             </div>
 
@@ -454,34 +454,34 @@ watch(data, (newData) => {
 });
 
 // Cloudinary Bilgileriniz
-const cloudName = "cozumemlak";
-const uploadPreset = "ml_default"; // Panelde oluşturduğunuz isim
+// const cloudName = "cozumemlak";
+// const uploadPreset = "ml_default"; // Panelde oluşturduğunuz isim
 
-const uploadToCloudinary = async (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", uploadPreset);
+// const uploadToCloudinary = async (file) => {
+//     const formData = new FormData();
+//     formData.append("file", file);
+//     formData.append("upload_preset", uploadPreset);
 
-    const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-            method: "POST",
-            body: formData,
-        }
-    );
+//     const response = await fetch(
+//         `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+//         {
+//             method: "POST",
+//             body: formData,
+//         }
+//     );
 
-    if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error.message);
-    }
+//     if (!response.ok) {
+//         const errorData = await response.json();
+//         throw new Error(errorData.error.message);
+//     }
 
-    const data = await response.json();
-    // return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
-    return data; 
-};
+//     const data = await response.json();
+//     // return data.secure_url; // Küçültülmüş ve optimize edilmiş resmin linki
+//     return data; 
+// };
 
 const saveEstate = async () => {
-    let response = null;
+    // let response = null;
     let public_id = null;
     try {
         submitted.value = true;
@@ -492,19 +492,19 @@ const saveEstate = async () => {
 
         let imageUrl = image.value;
 
-        if (selectedFile.value) {
-            toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
+        // if (selectedFile.value) {
+        //     toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
             
-            // imageUrl = await uploadToCloudinary(selectedFile.value);
-            response = await uploadToCloudinary(selectedFile.value);
-            if(!response || !response.secure_url){
-                toast.add({ severity: 'error', summary: 'Hata', detail: 'Resim yüklenirken hata oluştu.', life: 2000 });
-                return;
-            }
-            imageUrl = response.secure_url;
-            public_id = response.public_id;
-            toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Resim başarıyla yüklendi.', life: 2000 });
-        }
+        //     // imageUrl = await uploadToCloudinary(selectedFile.value);
+        //     response = await uploadToCloudinary(selectedFile.value);
+        //     if(!response || !response.secure_url){
+        //         toast.add({ severity: 'error', summary: 'Hata', detail: 'Resim yüklenirken hata oluştu.', life: 2000 });
+        //         return;
+        //     }
+        //     imageUrl = response.secure_url;
+        //     public_id = response.public_id;
+        //     toast.add({ severity: 'success', summary: 'Başarılı', detail: 'Resim başarıyla yüklendi.', life: 2000 });
+        // }
         const date = new Date(created_at.value);
         const y = date.getFullYear()
         const m = String(date.getMonth() + 1).padStart(2, "0")

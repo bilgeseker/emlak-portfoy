@@ -1,229 +1,228 @@
 <template>
-    <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8">
-        <!-- <div class="flex justify-between items-center">
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Yönetimi</h1>
-        </div> -->
-        <!-- İstatistik Kartları -->
-        <!-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
+        <div class="max-w-7xl mx-auto space-y-6">
+            <!-- Professional Header Section -->
             <div
-                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Toplam Konut</p>
-                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ totalEstates }}</p>
-                    </div>
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                        <i class="pi pi-home text-white text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Bu Ay Eklenen</p>
-                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ newThisMonth }}</p>
-                    </div>
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                        <i class="pi pi-plus-circle text-white text-xl"></i>
-                    </div>
-                </div>
-            </div>
-
-            <div
-                class="bg-white dark:bg-zinc-900 rounded-2xl shadow-lg border border-slate-200 dark:border-zinc-800 p-6 hover:shadow-xl transition-all duration-300">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-slate-600 dark:text-zinc-400">Aktif Filtreler</p>
-                        <p class="text-3xl font-bold text-slate-800 dark:text-white mt-1">{{ activeFilterCount }}</p>
-                    </div>
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <i class="pi pi-filter text-white text-xl"></i>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-white">İlan Yönetimi</h1>
-
-            <div class="flex gap-2">
-                <Button type="button" icon="pi pi-filter"
-                    :label="`Filtrele ${activeFilterCount > 0 ? '(' + activeFilterCount + ')' : ''}`"
-                    @click="onOpenFilter" :severity="activeFilterCount > 0 ? 'primary' : 'secondary'" outlined />
-            </div>
-        </div>
-        <div
-            class="hidden lg:block bg-white rounded-xl dark:bg-zinc-900 shadow-sm  border border-slate-200 dark:border-zinc-900 overflow-hidden">
-
-            <Skeleton v-if="isPending"></Skeleton>
-            <DataTable v-else :value="filteredEstates" paginator :rows="8" dataKey="id" filterDisplay="menu" stripedRows
-                sortMode="multiple" responsiveLayout="scroll" class="p-datatable-sm cursor-pointer dark:!bg-zinc-900"
-                @row-click="onRowClick" rowHover columnResizeMode="fit" :pt="{
-                    thead: {
-                        class: 'h-10'
-                    }
-                }">
-
-                <Column field="image">
-                    <template #body="slotProps">
-                        <img :src="getOptimizedUrl(slotProps.data.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
-                            :alt="slotProps.data.title"
-                            class="w-30 h-24 object-contain rounded shadow border border-slate-100 dark:border-zinc-800" />
-                    </template>
-                </Column>
-
-                <Column field="title" header="İlan Başlığı" sortable></Column>
-                <Column field="property_type" header="Kategori" sortable>
-                    <template #body="{ data, field }">
-                        {{ getLabel(data[field], propertyTypes) }}
-                    </template>
-                </Column>
-
-                <Column field="rooms" header="Oda" sortable>
-                    <template #body="{ data, field }">
-                        {{ getLabel(data[field], roomTypeOptions) }}
-                    </template>
-                </Column>
-
-                <Column field="m2_gross" header="m² (Brüt)" sortable></Column>
-
-                <Column header="İl / İlçe" sortable sortField="city">
-                    <template #body="slotProps">
-                        <div class="flex items-center gap-1">
-                            <span class="font-medium text-slate-700 dark:text-zinc-200">
-                                {{ slotProps.data.city }}
-                            </span>
-                            <span class="text-slate-400">/</span>
-                            <span class="font-medium text-slate-700 dark:text-zinc-200">
-                                {{ slotProps.data.district }}
+                class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 relative z-10">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                                İlan Yönetimi
+                            </h1>
+                            <span
+                                class="px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 text-xs font-semibold border border-slate-200 dark:border-zinc-700">
+                                {{ estates?.length || 0 }} ilan
                             </span>
                         </div>
-                    </template>
-                </Column>
+                        <p class="text-slate-500 dark:text-zinc-400 text-sm">
+                            Portföyünüzdeki tüm emlak ilanlarını buradan yönetebilirsiniz.
+                        </p>
+                    </div>
 
-                <Column field="price" header="Fiyat" sortable>
-                    <template #body="slotProps">
-                        <span class="text-md font-black text-indigo-500 dark:text-purple-300 tracking-tight">
-                            {{ formatCurrency(slotProps.data.price) }}
-                        </span>
-                    </template>
-                </Column>
-
-                <Column header="İşlemler" style="min-width: 8rem">
-                    <template #body="slotProps">
-                        <div class="flex gap-2">
-                            <Button icon="pi pi-pencil" severity="contrast" @click="onEditEstate(slotProps.data.id)"
-                                rounded outlined />
-                            <Button icon="pi pi-trash" severity="danger" rounded outlined
-                                @click="confirmDelete(slotProps.data.id)" />
-                        </div>
-                    </template>
-                </Column>
-            </DataTable>
-        </div>
-        <!-- <div
-            class="lg:hidden flex flex-col bg-slate-100 dark:bg-zinc-950 gap-[1px] border-y border-slate-200 dark:border-zinc-800">
-            <div v-if="isPending" class="p-4 space-y-4">
-                <div v-for="i in 5" :key="i" class="flex gap-3 animate-pulse">
-                    <div class="w-32 h-24 bg-slate-200 dark:bg-zinc-800 rounded-lg"></div>
-                    <div class="flex-1 space-y-2">
-                        <div class="h-4 bg-slate-200 dark:bg-zinc-800 rounded w-3/4"></div>
-                        <div class="h-3 bg-slate-100 dark:bg-zinc-800 rounded w-1/2"></div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <Button label="Filtrele" icon="pi pi-filter"
+                            :badge="activeFilterCount > 0 ? activeFilterCount.toString() : null" @click="onOpenFilter"
+                            outlined severity="secondary"
+                            class="!border-slate-300 dark:!border-zinc-700 !text-slate-700 dark:!text-zinc-300 hover:!bg-slate-50 dark:hover:!bg-zinc-800 !font-medium" />
+                        <!-- New Estate Button (Currently missing in original code logic, but consistent header structure is good practice. Keeping Filter only as per original) -->
                     </div>
                 </div>
             </div>
 
-            <div v-else v-for="item in filteredEstates" :key="item.id"
-                class="flex flex-col p-4 bg-white dark:bg-zinc-900 border-b border-slate-100 dark:border-zinc-800">
-
-                <div class="flex gap-4">
-                    <div @click="router.push(`/estateDetails/${item.id}`)" class="cursor-pointer flex-shrink-0">
-                        <img :src="getOptimizedUrl(item.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
-                            class="w-24 h-20 object-cover rounded-lg shadow-sm" />
-                    </div>
-
-                    <div class="flex-1 min-w-0">
-                        <div @click="router.push(`/estateDetails/${item.id}`)" class="cursor-pointer">
-                            <h3 class="text-[14px] font-bold text-slate-800 dark:text-zinc-100 line-clamp-1">
-                                {{ item.title }}
-                            </h3>
-                            <div class="flex items-center gap-1 mt-1 text-[12px] text-slate-500 dark:text-zinc-400">
-                                <i class="pi pi-map-marker text-[10px]"></i>
-                                <span>{{ item.city }} / {{ item.district }}</span>
-                            </div>
-                            <div class="mt-1">
-                                <span class="text-md font-black text-indigo-500 dark:text-purple-300 tracking-tight">
-                                    {{ formatCurrency(item.price) }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="flex justify-end gap-2 mt-3">
-                            <Button icon="pi pi-pencil" severity="contrast" size="small" outlined label="Düzenle"
-                                class="!text-xs !py-1" @click.stop="onEditEstate(item.id)" />
-                            <Button icon="pi pi-trash" severity="danger" size="small" outlined label="Sil"
-                                class="!text-xs !py-1" @click.stop="confirmDelete(item.id)" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div> -->
-        <div class="lg:hidden bg-white rounded-xl dark:bg-zinc-900 shadow-sm  border border-slate-200 dark:border-zinc-900 overflow-hidden">
-            <Skeleton v-if="isPending" class="p-4" height="400px"></Skeleton>
-
-            <DataView v-else :value="filteredEstates" paginator :rows="8" class="bg-slate-100 dark:bg-zinc-950">
-                <template #list="slotProps">
-                    <div class="flex flex-col gap-[1px]">
-                        <div v-for="(item, index) in slotProps.items" :key="index"
-                            class="flex flex-col p-4 bg-white dark:bg-zinc-900 border-b border-slate-100 dark:border-zinc-800">
-
-                            <div class="flex gap-4">
-                                <div @click="router.push(`/estateDetails/${item.id}`)"
-                                    class="cursor-pointer flex-shrink-0">
-                                    <img :src="getOptimizedUrl(item.img_url) || 'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
-                                        class="w-28 h-24 object-cover rounded-lg shadow-sm" />
+            <!-- Content Area -->
+            <div class="grid grid-cols-1">
+                <!-- Desktop Table View -->
+                <div
+                    class="hidden lg:block bg-white dark:bg-zinc-900 rounded-2xl shadow-sm border border-slate-200 dark:border-zinc-800 overflow-hidden">
+                    <DataTable v-if="!isPending" :value="filteredEstates" paginator :rows="8" dataKey="id"
+                        class="p-datatable-lg" :pt="{
+                            headerRow: { class: 'bg-white dark:bg-zinc-900 border-b border-slate-100 dark:border-zinc-800 text-slate-500 dark:text-zinc-500 text-xs uppercase tracking-wider font-medium' },
+                            bodyRow: { class: 'hover:bg-slate-50/50 dark:hover:bg-zinc-800/20 transition-colors duration-200 cursor-pointer border-b border-slate-50 dark:border-zinc-800/50 last:border-0' },
+                            paginator: { class: 'bg-white dark:bg-zinc-900 border-t border-slate-100 dark:border-zinc-800' }
+                        }" @row-click="onRowClick">
+                        <template #empty>
+                            <div class="text-center py-20">
+                                <div
+                                    class="bg-slate-50 dark:bg-zinc-800/50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="pi pi-home text-3xl text-slate-400 dark:text-zinc-600"></i>
                                 </div>
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white">İlan Bulunamadı</h3>
+                                <p class="text-sm text-slate-500 dark:text-zinc-400 mt-1">Görünüşe göre henüz bir ilan
+                                    eklenmemiş.</p>
+                            </div>
+                        </template>
 
-                                <div class="flex-1 min-w-0">
-                                    <div @click="router.push(`/estateDetails/${item.id}`)" class="cursor-pointer">
+                        <Column field="image" header="Görsel">
+                            <template #body="slotProps">
+                                <div
+                                    class="w-20 h-16 rounded-lg overflow-hidden border border-slate-100 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-800">
+                                    <img :src="'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                                        :alt="slotProps.data.title" class="w-full h-full object-cover" />
+                                </div>
+                            </template>
+                        </Column>
+
+                        <Column field="title" header="İlan Başlığı" sortable style="min-width: 200px">
+                            <template #body="{ data }">
+                                <div class="font-semibold text-slate-900 dark:text-white text-sm line-clamp-2"
+                                    :title="data.title">
+                                    {{ data.title }}
+                                </div>
+                            </template>
+                        </Column>
+
+                        <Column field="property_type" header="Kategori" sortable>
+                            <template #body="{ data, field }">
+                                <span
+                                    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-slate-50 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700">
+                                    {{ getLabel(data[field], propertyTypes) }}
+                                </span>
+                            </template>
+                        </Column>
+
+                        <Column field="rooms" header="Oda" sortable>
+                            <template #body="{ data, field }">
+                                <span class="text-sm text-slate-600 dark:text-zinc-400">
+                                    {{ getLabel(data[field], roomTypeOptions) }}
+                                </span>
+                            </template>
+                        </Column>
+
+                        <Column field="m2_gross" header="m² (Brüt)" sortable>
+                            <template #body="{ data }">
+                                <span class="text-sm text-slate-600 dark:text-zinc-400 tabular-nums">
+                                    {{ data.m2_gross }}
+                                </span>
+                            </template>
+                        </Column>
+
+                        <Column header="Konum" sortable sortField="city">
+                            <template #body="slotProps">
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-900 dark:text-white text-sm">
+                                        {{ slotProps.data.district }}
+                                    </span>
+                                    <span class="text-xs text-slate-500 dark:text-zinc-500">
+                                        {{ slotProps.data.city }}
+                                    </span>
+                                </div>
+                            </template>
+                        </Column>
+
+                        <Column field="price" header="Fiyat" sortable style="min-width: 140px">
+                            <template #body="slotProps">
+                                <span
+                                    class="text-base font-bold text-indigo-600 dark:text-indigo-400 tracking-tight tabular-nums">
+                                    {{ formatCurrency(slotProps.data.price) }}
+                                </span>
+                            </template>
+                        </Column>
+
+                        <Column header="" style="width: 100px" alignFrozen="right" frozen>
+                            <template #body="slotProps">
+                                <div class="flex items-center justify-end gap-1">
+                                    <Button icon="pi pi-pencil" text rounded severity="secondary"
+                                        @click.stop="onEditEstate(slotProps.data.id)"
+                                        class="!w-8 !h-8 !text-slate-500 dark:!text-zinc-400 hover:!bg-slate-100 dark:hover:!bg-zinc-800" />
+                                    <Button icon="pi pi-trash" text rounded severity="danger"
+                                        @click.stop="confirmDelete(slotProps.data.id)"
+                                        class="!w-8 !h-8 !text-slate-400 dark:!text-zinc-500 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-900/10" />
+                                </div>
+                            </template>
+                        </Column>
+                    </DataTable>
+
+                    <!-- Custom Shimmer Loading -->
+                    <div v-else class="divide-y divide-slate-100 dark:divide-zinc-800">
+                        <div
+                            class="bg-slate-50 dark:bg-zinc-800/30 h-10 border-b border-slate-100 dark:border-zinc-800">
+                        </div>
+                        <div v-for="i in 6" :key="i"
+                            class="p-4 flex items-center gap-6 animate-pulse bg-white dark:bg-zinc-900">
+                            <div class="w-20 h-16 bg-slate-100 dark:bg-zinc-800 rounded-lg"></div>
+                            <div class="flex-1 space-y-2 py-1">
+                                <div class="h-4 bg-slate-100 dark:bg-zinc-800 rounded w-1/3"></div>
+                                <div class="h-3 bg-slate-100 dark:bg-zinc-800 rounded w-1/4"></div>
+                            </div>
+                            <div class="w-24 h-6 bg-slate-100 dark:bg-zinc-800 rounded"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Verified Mobile Card View -->
+                <div class="lg:hidden grid gap-4">
+                    <div v-if="isPending" class="space-y-4">
+                        <div v-for="i in 3" :key="i"
+                            class="bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-zinc-800 animate-pulse h-32 flex gap-4">
+                            <div class="w-28 h-24 bg-slate-100 dark:bg-zinc-800 rounded-lg shrink-0"></div>
+                            <div class="flex-1 space-y-2 py-2">
+                                <div class="h-4 bg-slate-100 dark:bg-zinc-800 rounded w-full"></div>
+                                <div class="h-3 bg-slate-100 dark:bg-zinc-800 rounded w-1/2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <template v-else>
+                        <div v-for="item in filteredEstates" :key="item.id"
+                            @click="router.push(`/estateDetails/${item.id}`)"
+                            class="bg-white dark:bg-zinc-900 rounded-2xl p-4 shadow-sm border border-slate-200 dark:border-zinc-800 active:bg-slate-50 dark:active:bg-zinc-800 transition-colors relative overflow-hidden flex gap-4">
+                            <!-- Image Section -->
+                            <div
+                                class="w-28 h-24 shrink-0 rounded-xl overflow-hidden bg-slate-100 dark:bg-zinc-800 border border-slate-100 dark:border-zinc-800 relative">
+                                <img :src="'https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=200&q=80'"
+                                    class="w-full h-full object-cover" />
+                                <div
+                                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1.5 flex justify-center">
+                                    <span class="text-[10px] font-bold text-white tracking-wide">
+                                        {{ item.rooms ? getLabel(item.rooms, roomTypeOptions) : '-' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Content Section -->
+                            <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                                <div>
+                                    <div class="flex justify-between items-start">
                                         <h3
-                                            class="text-[14px] font-bold text-slate-800 dark:text-zinc-100 line-clamp-1">
+                                            class="text-sm font-bold text-slate-800 dark:text-zinc-100 line-clamp-2 leading-snug">
                                             {{ item.title }}
                                         </h3>
-                                        <div
-                                            class="flex items-center gap-1 mt-1 text-[12px] text-slate-500 dark:text-zinc-400">
-                                            <i class="pi pi-map-marker text-[10px]"></i>
-                                            <span>{{ item.city }} / {{ item.district }}</span>
-                                        </div>
-                                        <div class="mt-1">
-                                            <span
-                                                class="text-md font-black text-indigo-500 dark:text-purple-300 tracking-tight">
-                                                {{ formatCurrency(item.price) }}
-                                            </span>
+                                        <div class="flex gap-1 -mt-1 -mr-1">
+                                            <Button icon="pi pi-pencil" rounded text severity="secondary" size="small"
+                                                class="!w-8 !h-8 !p-0" @click.stop="onEditEstate(item.id)" />
+                                            <Button icon="pi pi-trash" rounded text severity="danger" size="small"
+                                                class="!w-8 !h-8 !p-0" @click.stop="confirmDelete(item.id)" />
                                         </div>
                                     </div>
-
-                                    <div class="flex justify-end gap-2 mt-3">
-                                        <Button icon="pi pi-pencil" severity="contrast" size="small" outlined
-                                            label="Düzenle" class="!text-xs !py-1"
-                                            @click.stop="onEditEstate(item.id)" />
-                                        <Button icon="pi pi-trash" severity="danger" size="small" outlined label="Sil"
-                                            class="!text-xs !py-1" @click.stop="confirmDelete(item.id)" />
+                                    <div class="flex items-center gap-1 mt-1 text-xs text-slate-500 dark:text-zinc-500">
+                                        <i class="pi pi-map-marker text-[10px]"></i>
+                                        <span>{{ item.district }} / {{ item.city }}</span>
                                     </div>
+                                </div>
+                                <div class="mt-2 flex items-center justify-between">
+                                    <span
+                                        class="text-base font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
+                                        {{ formatCurrency(item.price) }}
+                                    </span>
+                                    <span
+                                        class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 font-medium h-fit">
+                                        {{ getLabel(item.property_type, propertyTypes) }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </template>
-            </DataView>
+                    </template>
+                </div>
+            </div>
         </div>
-        <Drawer v-model:visible="visibleFilter" header="Filtreleme" position="left"
-            class="!w-full md:!w-[400px] dark:bg-zinc-900">
+
+        <Drawer v-model:visible="visibleFilter" header="Filtreleme" position="right"
+            class="!w-full md:!w-[400px] dark:bg-zinc-900 border-l border-slate-200 dark:border-zinc-800" :pt="{
+                header: { class: '!p-5 !border-b !border-slate-100 dark:!border-zinc-800 !bg-white dark:!bg-zinc-900' },
+                content: { class: '!p-0 !bg-white dark:!bg-zinc-900' },
+                title: { class: '!text-lg !font-bold !text-slate-900 dark:!text-white' }
+            }">
             <FilterDrawer v-model="filters" @reset="resetFilters" @apply="applyFilter" />
         </Drawer>
     </div>
@@ -238,9 +237,9 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import ConfirmDialog from 'primevue/confirmdialog';
-import Skeleton from 'primevue/skeleton';
+//import Skeleton from 'primevue/skeleton';
 import Drawer from 'primevue/drawer';
-import DataView from 'primevue/dataview';
+//import DataView from 'primevue/dataview';
 // import FloatLabel from 'primevue/floatlabel';
 // import Select from 'primevue/select';
 // import InputText from 'primevue/inputtext';
@@ -444,10 +443,10 @@ const resetFilters = () => {
 // }
 
 // script setup içine ekleyin
-const getOptimizedUrl = (url) => {
-    if (!url || !url.includes('cloudinary')) return url;
-    return url.replace('/upload/', '/upload/w_150,c_thumb,q_auto,f_auto/');
-};
+// const getOptimizedUrl = (url) => {
+//     if (!url || !url.includes('cloudinary')) return url;
+//     return url.replace('/upload/', '/upload/w_150,c_thumb,q_auto,f_auto/');
+// };
 
 // const totalEstates = computed(() => {
 //     return estates.value?.length || 0;
@@ -464,17 +463,42 @@ const getOptimizedUrl = (url) => {
 // });
 </script>
 <style scoped>
-.p-paginator {
-    border-radius: 0px;
+/* Gradient Text Support */
+.text-gradient {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-:deep(.p-paginator) {
-    padding: 0.5rem;
-    justify-content: center;
+/* Custom Scrollbar for specific containers */
+.custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
 }
 
-:deep(.p-paginator-page), :deep(.p-paginator-next), :deep(.p-paginator-last), :deep(.p-paginator-first), :deep(.p-paginator-prev) {
-    min-width: 2.5rem;
-    height: 2.5rem;
+.dark .custom-scrollbar {
+    scrollbar-color: #3f3f46 transparent;
+}
+
+/* Remove default table borders if needed */
+:deep(.p-datatable-wrapper) {
+    border-radius: 0 !important;
+}
+
+:deep(.p-datatable-header) {
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Row Hover Animation */
+:deep(.p-datatable-tbody > tr) {
+    transition: all 0.2s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .p-dialog {
+        width: 95vw !important;
+    }
 }
 </style>
