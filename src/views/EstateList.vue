@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
-        <div class="max-w-7xl mx-auto space-y-6">
+        <div class="max-w-8xl mx-auto space-y-6">
             <!-- Professional Header Section -->
             <div
                 class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">
@@ -127,7 +127,7 @@
                                         class="!w-8 !h-8 !text-slate-500 dark:!text-zinc-400 hover:!bg-slate-100 dark:hover:!bg-zinc-800" />
                                     <Button icon="pi pi-trash" text rounded severity="danger"
                                         @click.stop="confirmDelete(slotProps.data.id)"
-                                        class="!w-8 !h-8 !text-slate-400 dark:!text-zinc-500 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-900/10" />
+                                        class="!w-8 !h-8 hover:!text-red-600 hover:!bg-red-50 dark:hover:!bg-red-900/10" />
                                 </div>
                             </template>
                         </Column>

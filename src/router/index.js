@@ -4,6 +4,7 @@ import EstateList from "@/views/EstateList.vue";
 import EstateDetails from "@/views/EstateDetails.vue";
 import OwnerList from "@/views/OwnerList.vue";
 import AddEstate from "@/views/AddEstate.vue";
+import OwnerDetails from "@/views/OwnerDetails.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -13,28 +14,36 @@ const router = createRouter({
             name: "giris",
             component: LoginView,
             meta: { requiresAuth: false }
-        },{
+        }, {
             path: "/estateList",
             name: "evListesi",
             component: EstateList,
             meta: { requiresAuth: true }
-        },{
+        }, {
             path: "/estateDetails/:id",
             name: "evDetaylari",
             component: EstateDetails,
             meta: { requiresAuth: true }
-        },{
+        }, {
             path: "/ownerList",
             name: "musteriListesi",
             component: OwnerList,
             meta: { requiresAuth: true }
-        },{
+        }, {
             path: "/addEstate",
             name: "evEkle",
             component: AddEstate,
             meta: { requiresAuth: true }
+        }, {
+            path: "/owner/:id",
+            name: "ownerDetails",
+            component: OwnerDetails,
+            meta: { requiresAuth: true }
         }
-    ]
+    ],
+    scrollBehavior() {
+        return { top: 0, behavior: 'smooth' }
+    }
 })
 // router.beforeEach(async (to, from, next) => {
 //   const userid = localStorage.getItem("userid");

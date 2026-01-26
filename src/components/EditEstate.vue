@@ -219,8 +219,7 @@
                 <label class="text-sm font-semibold text-slate-600 dark:text-zinc-200">Fiyat (TL)<span
                         class="font-bold text-red-500"> *</span></label>
                 <InputNumber class="w-full dark:bg-zinc-800 dark:border-zinc-700" mode="currency" currency="TRY"
-                    locale="tr-TR" inputClass="p-3 md:p-2 w-full" v-model="price"
-                    :invalid="submitted && !price" />
+                    locale="tr-TR" inputClass="p-3 md:p-2 w-full" v-model="price" :invalid="submitted && !price" />
             </div>
 
             <!-- <div class="flex flex-col gap-2">
@@ -485,7 +484,7 @@ const saveEstate = async () => {
     let public_id = null;
     try {
         submitted.value = true;
-        if (!selectedCity.value?.name || !selectedDistrict.value || !selectedNeighborhood.value || !price.value || !m2_gross.value || !m2_net.value || !property_type.value || !title.value) {
+        if (!selectedCity.value || !selectedDistrict.value || !selectedNeighborhood.value || !price.value || !m2_gross.value || !m2_net.value || !property_type.value || !title.value) {
             toast.add({ severity: 'error', summary: 'Hata', detail: 'Tüm zorunlu alanları doldurunuz.', life: 2000 });
             return;
         }
@@ -494,7 +493,7 @@ const saveEstate = async () => {
 
         // if (selectedFile.value) {
         //     toast.add({ severity: 'info', summary: 'Yükleniyor', detail: 'Resim optimize ediliyor...', life: 2000 });
-            
+
         //     // imageUrl = await uploadToCloudinary(selectedFile.value);
         //     response = await uploadToCloudinary(selectedFile.value);
         //     if(!response || !response.secure_url){
@@ -514,7 +513,7 @@ const saveEstate = async () => {
 
         const payload = {
             created_at: finalDate,
-            city: selectedCity.value.name,
+            city: selectedCity.value,
             district: selectedDistrict.value,
             neighborhood: selectedNeighborhood.value,
             m2_gross: m2_gross.value,

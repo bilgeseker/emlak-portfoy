@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
-        <div class="max-w-7xl mx-auto space-y-6">
+        <div class="max-w-8xl mx-auto space-y-6">
             <!-- Professional Header Section -->
             <div
                 class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">

@@ -2,10 +2,10 @@
     <Dialog :visible="props.modelValue" @update:visible="$emit('update:modelValue', $event)" modal header=" "
         :style="{ width: '90vw', maxWidth: '600px', margin: '0px 8px' }"
         :breakpoints="{ '960px': '80vw', '641px': '100vw' }" class="font-sans" :pt="{
-            root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 !rounded-2xl overflow-hidden',
-            header: 'p-0',
-            content: 'p-0 bg-white dark:bg-zinc-900',
-            footer: 'p-5 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-100 dark:border-zinc-800'
+            root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 mx-2 !rounded-xl',
+            header: 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-100 border-b border-slate-200 dark:border-zinc-800 p-4 md:p-6 !rounded-xl',
+            content: 'p-4 md:p-6 bg-white dark:bg-zinc-900 ',
+            footer: 'p-4 md:p-6 bg-slate-50 dark:bg-zinc-900/50 border-t !border-green-300 dark:zinc-slate-800 !rounded-xl'
         }">
         <!-- Professional Custom Header -->
         <div
@@ -156,11 +156,11 @@ const fetchOwner = async (id) => {
         commission_rate.value = data.commission_rate || null;
         notes.value = data.owner_notes || '';
     } catch (error) {
-        console.error('Ev sahibi getirilirken hata:', error);
+        console.error('Mülk sahibi getirilirken hata:', error);
         toast.add({
             severity: 'error',
             summary: 'Hata',
-            detail: 'Ev sahibi bilgileri yüklenemedi',
+            detail: 'Mülk sahibi bilgileri yüklenemedi',
             life: 3000
         });
     }
@@ -202,7 +202,7 @@ const saveOwner = async () => {
             toast.add({
                 severity: 'success',
                 summary: 'Başarılı',
-                detail: 'Ev sahibi güncellendi',
+                detail: 'Mülk sahibi güncellendi',
                 life: 3000
             });
         } else {
@@ -221,7 +221,7 @@ const saveOwner = async () => {
             toast.add({
                 severity: 'success',
                 summary: 'Başarılı',
-                detail: 'Ev sahibi eklendi',
+                detail: 'Mülk sahibi eklendi',
                 life: 3000
             });
         }
@@ -234,7 +234,7 @@ const saveOwner = async () => {
         toast.add({
             severity: 'error',
             summary: 'Hata',
-            detail: 'Ev sahibi kaydedilemedi',
+            detail: 'Mülk sahibi kaydedilemedi',
             life: 3000
         });
     } finally {

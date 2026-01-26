@@ -6,11 +6,12 @@
                 <i class="pi pi-arrow-left"></i>
                 <span>Listeye Dön</span>
             </button>
-            <!-- <div class="flex gap-2">
-        <span :class="statusClass(selectedEstate.status)" class="px-3 py-1 rounded-full text-xs font-bold uppercase">
-          {{ selectedEstate.status }}
-        </span>
-      </div> -->
+            <div class="flex gap-2">
+                <button @click.stop="onEditEstate(selectedEstate.id)"
+                    class="flex items-center gap-2 text-slate-600 dark:text-zinc-400 hover:text-green-600 transition-colors">
+                    <i class="pi pi-pencil"></i>
+                </button>
+            </div>
         </div>
 
         <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -73,7 +74,7 @@
                             <span class="font-medium dark:text-zinc-300">#{{ selectedEstate.id }}</span>
                         </div> -->
                         <div class="flex justify-between text-sm cursor-pointer" @click="showOwnerModal">
-                            <span class="text-slate-400">Ev Sahibi</span>
+                            <span class="text-slate-400">Mülk Sahibi</span>
                             <span class="font-medium dark:text-zinc-300">{{ selectedEstate.owners?.owner_name || '-' }}
                                 {{
                                     selectedEstate.owners?.owner_surname || '' }}</span>
@@ -234,7 +235,7 @@
         <div
             class="px-6 py-5 border-b border-slate-100 dark:border-zinc-800 flex justify-between items-center bg-white dark:bg-zinc-900">
             <div>
-                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Ev Sahibi Detayları</h3>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">Mülk Sahibi Detayları</h3>
                 <p class="text-slate-500 dark:text-zinc-400 text-sm mt-0.5">Mülk sahibi iletişim ve iş bilgileri.</p>
             </div>
             <div class="w-10 h-10 rounded-full bg-slate-50 dark:bg-zinc-800 flex items-center justify-center">
@@ -301,6 +302,7 @@
             </div>
         </template>
     </Dialog>
+    <EditEstate v-model="editEstate" :id="selectedId" />
 </template>
 
 <script setup>
@@ -310,12 +312,21 @@ import { supabase } from '@/supabase';
 import { useQuery } from '@tanstack/vue-query'
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
+import EditEstate from '@/components/EditEstate.vue';
 import { heatingOptions, roomTypeOptions, kitchenTypes, booleans, parkingTypes, propertyTypes, booleans2, usageTypes, deedStatus, zoningStatusTypes } from '../constants/constants.js';
 import EstateDetailSkeleton from '@/components/EstateDetailSkeleton.vue';
 const route = useRoute();
 const ownerModal = ref(false);
 
+const editEstate = ref(false);
+const selectedId = ref(null);
+
 const estateId = computed(() => route.params.id);
+
+const onEditEstate = (id) => {
+    editEstate.value = true;
+    selectedId.value = id;
+};
 
 const getLabel = (currentValue, optionsList) => {
     if (currentValue === null || currentValue === undefined) return '-';

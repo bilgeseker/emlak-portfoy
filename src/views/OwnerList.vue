@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen bg-slate-50 dark:bg-zinc-950 p-4 md:p-8 transition-colors duration-300 font-sans">
-        <div class="max-w-7xl mx-auto space-y-6">
+        <div class="max-w-8xl mx-auto space-y-6">
             <!-- Professional Header Section -->
             <div
                 class="relative overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-sm p-6 md:p-8">
@@ -163,8 +163,8 @@
                                                 {{ item.owner_name }} {{ item.owner_surname }}
                                             </h3>
                                             <span
-                                                class="inline-block mt-2 px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700">
-                                                %{{ item.commission_rate || 0 }} Komisyon
+                                                class="inline-block mt-2 px-2 py-0.5 rounded text-xs font-medium  text-slate-600 dark:text-zinc-400">
+                                                {{ item.owner_phone }}
                                             </span>
                                         </div>
                                         <div class="flex gap-1 -mt-1 -mr-1" @click.stop>
@@ -174,7 +174,13 @@
                                                 class="!w-8 !h-8 !p-0" @click.stop="confirmDelete(item.id)" />
                                         </div>
                                     </div>
+                                    <div>
 
+                                        <span
+                                            class="inline-block mt-2 px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-zinc-700">
+                                            %{{ item.commission_rate || 0 }} Komisyon
+                                        </span>
+                                    </div>
                                     <div class="mt-4 flex items-center justify-between">
                                         <p class="text-sm text-slate-500 dark:text-zinc-400 truncate max-w-[180px]">
                                             {{ item.owner_notes || 'Not yok' }}
@@ -247,7 +253,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import Drawer from 'primevue/drawer';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
-// import { useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import EditOwner from '@/components/EditOwner.vue';
 import { useConfirm } from "primevue/useconfirm";
 import { supabase } from '@/supabase';
@@ -259,7 +265,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 
 const queryClient = useQueryClient()
 const confirm = useConfirm();
-// const router = useRouter();
+const router = useRouter();
 const editOwner = ref(false);
 const visibleFilter = ref(false);
 const selectedId = ref(null);
@@ -321,10 +327,10 @@ const activeFilterCount = computed(() => {
     }).length;
 });
 
-// const onRowClick = (event) => {
-//     // Müşteri detayına gitmek için, eğer varsa
-//     // router.push(`/customerDetails/${event.data.id}`);
-// };
+const onRowClick = (event) => {
+    // Müşteri detayına gitmek için, eğer varsa
+    router.push(`/owner/${event.data.id}`);
+};
 
 const onAddOwner = () => {
     editOwner.value = true;
@@ -338,7 +344,7 @@ const onEditOwner = (id) => {
 
 const confirmDelete = (id) => {
     confirm.require({
-        message: 'Bu ev sahibini silmek istediğinize emin misiniz?',
+        message: 'Bu mülk sahibini silmek istediğinize emin misiniz?',
         header: 'Silme Onayı',
         icon: 'pi pi-exclamation-triangle',
         rejectLabel: 'İptal',
@@ -357,7 +363,7 @@ const confirmDelete = (id) => {
                 toast.add({
                     severity: 'success',
                     summary: 'Başarılı',
-                    detail: 'Ev sahibi silindi',
+                    detail: 'Mülk sahibi silindi',
                     life: 3000
                 });
 
@@ -365,7 +371,7 @@ const confirmDelete = (id) => {
 
             } catch (err) {
                 console.error("Silme hatası:", err.message);
-                toast.add({ severity: 'error', summary: 'Hata', detail: 'Ev sahibi silinemedi', life: 3000 });
+                toast.add({ severity: 'error', summary: 'Hata', detail: 'Mülk sahibi silinemedi', life: 3000 });
             }
         },
         reject: () => {
