@@ -40,7 +40,6 @@
                                         class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 flex-1"
                                         :class="{ '!border-red-500': submitted && !selectedOwner }" />
                                     <Button icon="pi pi-plus" severity="secondary" outlined @click="openNewOwnerDialog"
-                                        v-tooltip.top="'Yeni Müşteri Ekle'"
                                         class="!border-slate-300 dark:!border-zinc-700 !text-slate-600 dark:!text-zinc-400 !bg-slate-50 dark:!bg-zinc-800" />
                                 </div>
                             </div>
@@ -377,6 +376,7 @@ import DatePicker from 'primevue/datepicker';
 import Select from 'primevue/select';
 import Textarea from 'primevue/textarea';
 import FileUpload from 'primevue/fileupload';
+import Toast from 'primevue/toast';
 // import { supabase } from '@/supabase.js';
 // import { useQuery } from '@tanstack/vue-query'
 import { ref, computed } from 'vue';

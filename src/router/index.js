@@ -41,8 +41,12 @@ const router = createRouter({
             meta: { requiresAuth: true }
         }
     ],
-    scrollBehavior() {
-        return { top: 0, behavior: 'smooth' }
+    scrollBehavior(_to, _from, savedPosition) {
+        if (savedPosition) {
+            return savedPosition
+        } else {
+            return { x: 0, y: 0 }
+        }
     }
 })
 // router.beforeEach(async (to, from, next) => {

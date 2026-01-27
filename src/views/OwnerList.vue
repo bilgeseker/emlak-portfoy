@@ -235,16 +235,16 @@
                     </div>
                 </div>
             </Drawer>
-
-            <EditOwner v-model="editOwner" :id="selectedId" />
-            <ConfirmDialog />
-            <Toast position="bottom-center" />
         </div>
+
+        <EditOwner v-model="editOwner" :id="selectedId" />
+        <ConfirmDialog />
+        <Toast position="bottom-center" />
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -282,6 +282,24 @@ const appliedFilters = ref({
     commission_rate: null,
     notes: ''
 });
+
+// LocalStorage'dan filtreleri yükle
+onMounted(() => {
+    const savedFilters = localStorage.getItem('ownerFilters');
+    if (savedFilters) {
+        try {
+            appliedFilters.value = JSON.parse(savedFilters);
+            filters.value = { ...appliedFilters.value };
+        } catch (e) {
+            console.warn('Filtreler yüklenirken hata:', e);
+        }
+    }
+});
+
+// Filtreler değiştiğinde localStorage'a kaydet
+watch(appliedFilters, (newFilters) => {
+    localStorage.setItem('ownerFilters', JSON.stringify(newFilters));
+}, { deep: true });
 
 const getInitials = (firstName, lastName) => {
     const first = firstName?.charAt(0)?.toUpperCase() || '';
@@ -399,7 +417,6 @@ const { isPending, data: owners } = useQuery({
 });
 
 const filteredOwners = computed(() => {
-    console.log(owners.value)
     if (!owners.value) return [];
     return owners.value.filter(owner => {
         const matchesName = !appliedFilters.value.name ||

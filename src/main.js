@@ -12,6 +12,11 @@ import ConfirmationService from 'primevue/confirmationservice';
 import './registerServiceWorker'
 // import { queryClient } from './QueryClient'
 
+// Scroll restoration'ı devre dışı bırak
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+
 const app = createApp(App);
 app.use(PrimeVue, {
     theme: {

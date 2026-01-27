@@ -1,7 +1,7 @@
 <template>
     <Dialog :visible="props.modelValue" @update:visible="$emit('update:modelValue', $event)" modal header=" "
-        :style="{ width: '90vw', maxWidth: '600px', margin: '0px 8px' }"
-        :breakpoints="{ '960px': '80vw', '641px': '100vw' }" class="font-sans" :pt="{
+        :style="{ width: '90vw', maxWidth: '600px' }" :breakpoints="{ '960px': '80vw', '641px': '100vw' }"
+        class="font-sans" :pt="{
             root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 mx-2 !rounded-xl',
             header: 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-100 border-b border-slate-200 dark:border-zinc-800 p-4 md:p-6 !rounded-xl',
             content: 'p-4 md:p-6 bg-white dark:bg-zinc-900 ',
@@ -86,11 +86,11 @@
         </div>
 
         <template #footer>
-            <div class="flex gap-3 justify-end w-full">
-                <Button label="Vazgeç" icon="pi pi-times" text severity="secondary" @click="closeDialog"
-                    class="!px-4 !py-2 hover:!bg-slate-100 !text-slate-600 dark:!text-zinc-400" />
-                <Button :label="props.id ? 'Güncelle' : 'Kaydet'" icon="pi pi-check" severity="contrast"
-                    @click="saveOwner" :loading="loading" class="!px-6 !py-2 !rounded-lg" />
+            <div class="flex gap-2 w-full mt-5 md:w-auto justify-end">
+                <Button label="İptal" icon="pi pi-times" text severity="secondary" @click="closeDialog"
+                    class="flex-1 md:flex-none" />
+                <Button :label="props.id ? 'Güncelle' : 'Kaydet'" icon="pi pi-check" severity="success"
+                    @click="saveOwner" :loading="loading" class="flex-1 md:flex-none" />
             </div>
         </template>
     </Dialog>

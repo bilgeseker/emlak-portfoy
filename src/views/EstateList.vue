@@ -232,7 +232,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -271,6 +271,24 @@ const appliedFilters = ref({
     m2_netmin: null, m2_netmax: null, in_sale: null, property_type: null, heating: null, kitchen: null, usage_status: null, deed_status: null, balcony: null,
     in_site: null, zoning_status: null, kaks: null, gabari: null
 });  // Tabloyu filtreleyen asıl veri
+
+// LocalStorage'dan filtreleri yükle
+onMounted(() => {
+    const savedFilters = localStorage.getItem('estateFilters');
+    if (savedFilters) {
+        try {
+            appliedFilters.value = JSON.parse(savedFilters);
+            filters.value = { ...appliedFilters.value };
+        } catch (e) {
+            console.warn('Filtreler yüklenirken hata:', e);
+        }
+    }
+});
+
+// Filtreler değiştiğinde localStorage'a kaydet
+watch(appliedFilters, (newFilters) => {
+    localStorage.setItem('estateFilters', JSON.stringify(newFilters));
+}, { deep: true });
 const formatCurrency = (value) => {
     return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(value);
 };
