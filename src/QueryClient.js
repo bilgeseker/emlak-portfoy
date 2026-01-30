@@ -4,7 +4,7 @@ import { QueryClient } from '@tanstack/vue-query'
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60,         // 1 dakika cache geçerli
+      staleTime: 10000 * 60,         // 10 dakika cache geçerli
       refetchOnWindowFocus: false,  // pencere odaklanınca tekrar fetch etmesin
       retry: 1,                      // fetch başarısız olursa 1 kez denesin
     },

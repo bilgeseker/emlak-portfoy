@@ -47,7 +47,7 @@
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">İlan Başlığı
                                     <span class="text-red-500">*</span></label>
-                                <InputText v-model="title" placeholder="Örn: Deniz Manzaralı Lüks Daire"
+                                <InputText v-model="title" placeholder="Örn: Deniz Manzaralı Lüks Daire" maxlength="100"
                                     class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 focus:!border-indigo-500 dark:focus:!border-indigo-400 !shadow-none"
                                     :class="{ '!border-red-500': submitted && !title }" />
                             </div>
@@ -87,7 +87,7 @@
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Notlar</label>
-                                <Textarea v-model="notes" autoResize rows="4"
+                                <Textarea v-model="notes" autoResize rows="4" maxlength="500" fluid
                                     class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700 !shadow-none"
                                     placeholder="İlan hakkında detaylı açıklama..." />
                             </div>
@@ -147,14 +147,14 @@
                                         class="text-red-500">*</span></label>
                                 <InputNumber v-model="m2_gross" class="w-full"
                                     inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full"
-                                    :invalid="submitted && !m2_gross" />
+                                    :invalid="submitted && !m2_gross" min="0" max="999999"/>
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Net m² <span
                                         class="text-red-500">*</span></label>
                                 <InputNumber v-model="m2_net" class="w-full"
                                     inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full"
-                                    :invalid="submitted && !m2_net" />
+                                    :invalid="submitted && !m2_net" min="0" max="999999"/>
                             </div>
 
                             <!-- Conditionally Rendered Fields based on type -->
@@ -170,13 +170,13 @@
                                     <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Bulunduğu
                                         Kat</label>
                                     <InputNumber v-model="floor_located" class="w-full"
-                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" min="0" max="50"/>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Bina
                                         Yaşı</label>
                                     <InputNumber v-model="building_age" class="w-full"
-                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" min="0" max="200"/>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label
@@ -189,7 +189,7 @@
                                     <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Banyo
                                         Sayısı</label>
                                     <InputNumber v-model="num_of_bath" class="w-full"
-                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" min="0" max="20"/>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label
@@ -237,7 +237,7 @@
                                         Adı</label>
                                     <InputText :disabled="!isInSite" v-model="site_name"
                                         class="w-full !rounded-lg !border-slate-300 dark:!border-zinc-700"
-                                        :class="{ 'opacity-50 cursor-not-allowed': !isInSite }" />
+                                        :class="{ 'opacity-50 cursor-not-allowed': !isInSite }" maxlength="100"/>
                                 </div>
                             </template>
 
@@ -253,7 +253,7 @@
                                     <label
                                         class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Ada/Parsel</label>
                                     <InputNumber v-model="parsel_no" placeholder="Parsel" class="w-full"
-                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                        inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" min="0" max="999999"/>
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Kaks
@@ -300,13 +300,13 @@
                                 <InputNumber v-model="price" mode="currency" currency="TRY" locale="tr-TR"
                                     class="w-full"
                                     inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full text-lg font-bold text-indigo-600"
-                                    :invalid="submitted && !price" />
+                                    :invalid="submitted && !price" min="0" max="100000000"/>
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Aidat</label>
                                 <InputNumber v-model="member_fee" mode="currency" currency="TRY" locale="tr-TR"
                                     class="w-full"
-                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" />
+                                    inputClass="!rounded-lg !border-slate-300 dark:!border-zinc-700 w-full" min="0" max="999999"/>
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-sm font-semibold text-slate-700 dark:text-zinc-300">Krediye

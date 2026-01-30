@@ -5,7 +5,7 @@
             root: 'border-none shadow-2xl bg-white dark:bg-zinc-900 mx-2 !rounded-xl',
             header: 'bg-white dark:bg-zinc-900 text-slate-800 dark:text-zinc-100 border-b border-slate-200 dark:border-zinc-800 p-4 md:p-6 !rounded-xl',
             content: 'p-4 md:p-6 bg-white dark:bg-zinc-900 ',
-            footer: 'p-4 md:p-6 bg-slate-50 dark:bg-zinc-900/50 border-t border-green-300 dark:zinc-slate-800 !rounded-xl'
+            footer: 'p-4 md:p-6 bg-slate-50 dark:bg-zinc-900/50 border-t border-slate-300 dark:zinc-slate-800 !rounded-xl'
         }">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 mb-5 md:gap-6 ">
             <div class="col-span-1 md:col-span-2 flex flex-col gap-2">
@@ -263,9 +263,9 @@
         <template #footer>
             <div class="flex gap-2 w-full mt-5 md:w-auto justify-end">
                 <Button label="İptal" icon="pi pi-times" text severity="secondary"
-                    @click="$emit('update:modelValue', false)" class="flex-1 md:flex-none" />
+                    @click="$emit('update:modelValue', false)" class="flex-1 md:flex-none px-4 py-2 " />
                 <Button label="Kaydet" @click="saveEstate" icon="pi pi-check" severity="success" raised
-                    class="flex-1 md:flex-none" />
+                    class="flex-1 md:flex-none px-4 py-2 " />
             </div>
         </template>
     </Dialog>

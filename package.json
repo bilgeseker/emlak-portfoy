@@ -64,28 +64,6 @@
     },
     "rules": {}
   },
-  "vue": {
-    "pluginOptions": {
-      "electronBuilder": {
-        "builderOptions": {
-          "publish": [
-            {
-              "provider": "github",
-              "owner": "bilgeseker",
-              "repo": "emlak-portfoy"
-            }
-          ],
-          "win": {
-            "target": "nsis"
-          },
-          "nsis": {
-            "oneClick": false,
-            "allowToChangeInstallationDirectory": true
-          }
-        }
-      }
-    }
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

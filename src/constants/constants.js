@@ -228,3 +228,10 @@ export const gabariSecenekleri = [
   { label: "36.00", value: "36.00" }
 ];
 
+export const catTypes = [
+    { label: 'Ev Gösterimi', color: 'bg-indigo-500', value: "ev_gosterimi" },
+    { label: 'Mülk Sahibi Görüşme', color: 'bg-amber-500', value: "mulk_sahibi_gorusme" },
+    { label: 'Evrak / Tapu İşleri', color: 'bg-emerald-500', value: "evrak_tapu_isleri" },
+    { label: 'Fotoğraf Çekimi', color: 'bg-rose-500', value: "fotograf_cekimi" },
+    { label: 'Diğer', color: 'bg-purple-500', value: "diger" }
+];

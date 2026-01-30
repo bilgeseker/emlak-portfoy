@@ -236,11 +236,11 @@
                 </div>
             </Drawer>
         </div>
-
-        <EditOwner v-model="editOwner" :id="selectedId" />
-        <ConfirmDialog />
-        <Toast position="bottom-center" />
     </div>
+
+    <EditOwner v-model="editOwner" :id="selectedId" />
+    <ConfirmDialog class="mx-3"/>
+    <Toast position="bottom-center" />
 </template>
 
 <script setup>
@@ -400,7 +400,7 @@ const confirmDelete = (id) => {
 
 const fetchOwners = async () => {
     try {
-        const { data, error } = await supabase.from("owners").select(`*`).order('owner_name', { ascending: false });
+        const { data, error } = await supabase.from("owners").select(`*`).order('owner_name', { ascending: true });
         if (error) {
             throw error;
         }

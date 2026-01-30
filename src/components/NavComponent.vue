@@ -95,10 +95,10 @@ watch(() => props.isCollapsed, (newVal) => {
 });
 
 const menuItems = [
-    // { label: 'Dashboard', icon: 'pi pi-chart-bar', route: '/dashboard' },
     { label: 'İlanlarım', icon: 'pi pi-home', route: '/estateList' },
     { label: 'Müşteriler', icon: 'pi pi-users', route: '/ownerList' },
     { label: 'İlan ekle', icon: 'pi pi-plus-circle', route: '/addEstate' },
+    { label: 'Yapılacaklar', icon: 'pi pi-file-check', route: '/todo' },
 ];
 
 const closeMenu = () => {

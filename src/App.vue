@@ -1,4 +1,5 @@
 <template>
+  <Toast position="bottom-center" />
   <div class="flex h-screen w-full bg-slate-50 dark:bg-zinc-950 overflow-hidden">
 
     <NavComponent v-if="route.name !== 'giris'" v-model:isCollapsed="isCollapsed" />
@@ -24,6 +25,7 @@
 
 <script setup>
 import { RouterView } from 'vue-router';
+import Toast from 'primevue/toast';
 import NavComponent from './components/NavComponent.vue';
 import { VueQueryDevtools } from '@tanstack/vue-query-devtools'
 import { useRoute } from 'vue-router';

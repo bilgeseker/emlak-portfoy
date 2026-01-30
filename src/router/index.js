@@ -5,6 +5,7 @@ import EstateDetails from "@/views/EstateDetails.vue";
 import OwnerList from "@/views/OwnerList.vue";
 import AddEstate from "@/views/AddEstate.vue";
 import OwnerDetails from "@/views/OwnerDetails.vue";
+import ToDoList from "@/views/ToDoList.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -38,6 +39,11 @@ const router = createRouter({
             path: "/owner/:id",
             name: "ownerDetails",
             component: OwnerDetails,
+            meta: { requiresAuth: true }
+        }, {
+            path: "/todo",
+            name: "ToDoList",
+            component: ToDoList,
             meta: { requiresAuth: true }
         }
     ],
